@@ -1,0 +1,49 @@
+{% extends "base_bootstrap.html" %}
+{% block content %}
+<h1>Favorite Things (WC)</h1>
+<p>
+{% if thing_list %}
+<ul>
+  {% for thing in thing_list %}
+    <li>
+        <a href="{% url 'favwc:thing_detail'  thing.id %}">{{ thing.title }}</a>
+        {% if thing.owner_id == user.id %}
+        (<a href="{% url 'favwc:thing_update' thing.id %}">Edit</a> |
+        <a href="{% url 'favwc:thing_delete' thing.id %}">Delete</a>)
+        {% endif %}
+        {% if user.is_authenticated %}
+        <dj4e-favstar 
+            onclick="favToggle(this, '{% url 'favwc:thing_toggle' thing.id %}');"
+            {% if thing.id in favorites %} fav {% endif %} 
+        >
+        </dj4e-favstar>
+        {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>There are no things in the database.</p>
+{% endif %}
+</p>
+<p>
+<a href="{% url 'favwc:thing_create' %}">Add a Thing</a> |
+{% if user.is_authenticated %}
+<a href="{% url 'logout' %}?next={% url 'favwc:all' %}">Logout</a>
+{% else %}
+<a href="{% url 'login' %}?next={% url 'favwc:all' %}">Login</a>
+{% endif %}
+</p>
+<script>
+function favToggle(element, url) {
+    console.log('POSTing to', url);
+    fetch(url, { method: 'POST', body: '{}' } )
+    .then((response) => {
+        console.log(url, 'success');
+        element.toggleAttribute('fav');
+    }).catch((error) => {
+        alert('Url failed with '+error+' '+url);
+    });
+}
+</script>
+<script type="module" src="/site/wc/dj4e-favstar.js"></script>
+{% endblock %}

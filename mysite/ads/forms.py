@@ -1,0 +1,18 @@
+from django import forms
+from ads.models import Ad, Comment
+
+class CreateForm(forms.ModelForm):
+    max_upload_limit = 2 * 1024 * 1024
+    max_upload_limit_text = "2 MB"
+
+    file = forms.FileField(required=False, label='File to Upload')
+    upload_field_name = 'file'
+
+    class Meta:
+        model = Ad
+        fields = ['title', 'price', 'text', 'file']
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']

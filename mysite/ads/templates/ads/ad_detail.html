@@ -1,0 +1,23 @@
+<h2>{{ ad.title }} - ₹{{ ad.price }}</h2>
+<p>{{ ad.text }}</p>
+
+{% if ad.picture %}
+  <img src="{% url 'ads:ad_picture' ad.id %}" width="300"/>
+{% endif %}
+
+<h3>Comments:</h3>
+<ul>
+{% for comment in comments %}
+  <li>{{ comment.text }} - {{ comment.owner }}
+    {% if comment.owner == user %}
+      <a href="{% url 'ads:ad_comment_delete' comment.id %}">🗑️</a>
+    {% endif %}
+  </li>
+{% endfor %}
+</ul>
+
+<form method="post" action="{% url 'ads:ad_comment_create' ad.id %}">
+  {% csrf_token %}
+  {{ comment_form.as_p }}
+  <button type="submit">Add Comment</button>
+</form>

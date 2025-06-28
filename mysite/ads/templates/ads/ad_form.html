@@ -1,0 +1,10 @@
+<form method="post" enctype="multipart/form-data" id="upload_form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+<script>
+    document.getElementById("upload_form").onsubmit = () => {
+        alert("Submitting...");
+    }
+</script>
