@@ -18,6 +18,11 @@
         {{ form.text }}
     </div>
     <div style="margin-bottom: 15px;">
+        <label for="{{ form.tags.id_for_label }}">Tags:</label>
+        {{ form.tags }}
+        <div style="color: #666; font-size: 0.8em; margin-top: 5px;">Enter tags separated by commas</div>
+    </div>
+    <div style="margin-bottom: 15px;">
         <label for="{{ form.picture.id_for_label }}">Picture to Upload:</label>
         {{ form.picture }}
         <span id="file_size_message" style="display: none; margin-left: 10px; padding: 5px 10px; border-radius: 3px; font-size: 0.9em;"></span>
