@@ -121,12 +121,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT is already defined above for production
 
 # Add static files directories
 STATICFILES_DIRS = [
+    BASE_DIR / 'static',
 ]
 
+# Production settings for PythonAnywhere
+ALLOWED_HOSTS = ['shivamsingh747804.pythonanywhere.com', '127.0.0.1', 'localhost']
+
+# Set DEBUG to False for production
+DEBUG = False
+
+# Configure static files for production
+STATIC_ROOT = '/home/shivamsingh747804/dj4e-samples/mysite/staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -147,12 +155,3 @@ try:
     from .github_settings import *
 except ImportError:
     pass
-
-# Production settings for PythonAnywhere
-ALLOWED_HOSTS = ['shivamsingh747804.pythonanywhere.com', '127.0.0.1', 'localhost']
-
-# Set DEBUG to False for production
-DEBUG = False
-
-# Configure static files for production
-STATIC_ROOT = '/home/shivamsingh747804/dj4e-samples/mysite/staticfiles'

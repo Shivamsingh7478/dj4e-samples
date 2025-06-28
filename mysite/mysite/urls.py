@@ -31,6 +31,5 @@ urlpatterns = [
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
 
-# Add static files serving for development
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Add static files serving for development and production
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
