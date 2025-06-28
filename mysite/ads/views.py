@@ -99,7 +99,7 @@ def stream_file(request, pk):
 class CommentCreateView(LoginRequiredMixin, View):
     def post(self, request, pk):
         ad = get_object_or_404(Ad, id=pk)
-        comment = Comment(text=request.POST['comment'], owner=request.user, ad=ad)
+        comment = Comment(text=request.POST['text'], owner=request.user, ad=ad)
         comment.save()
         return redirect('ads:ad_detail', pk=pk)
 
