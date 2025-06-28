@@ -6,6 +6,7 @@
 <form method="post" enctype="multipart/form-data" id="upload_form">
     {% csrf_token %}
     {{ form.as_p }}
+    <div id="file_size_message" style="display: none; margin: 10px 0; padding: 10px; border-radius: 5px;"></div>
     <input type="submit" value="Submit">
 </form>
 
@@ -16,11 +17,19 @@
     function validateFileSize(file) {
         var maxSize = 2 * 1024 * 1024; // 2MB
         console.log('Validating file size:', file.size, 'bytes');
+        
+        var messageDiv = document.getElementById('file_size_message');
+        var fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        
         if (file.size > maxSize) {
-            alert("File size must be less than 2MB");
+            messageDiv.innerHTML = '<div style="color: red; background-color: #ffe6e6; border: 1px solid #ff9999; padding: 10px; border-radius: 5px;">❌ File size (' + fileSizeMB + ' MB) exceeds the maximum allowed size of 2 MB. Please select a smaller file.</div>';
+            messageDiv.style.display = 'block';
             return false;
+        } else {
+            messageDiv.innerHTML = '<div style="color: green; background-color: #e6ffe6; border: 1px solid #99ff99; padding: 10px; border-radius: 5px;">✅ File size (' + fileSizeMB + ' MB) is within the allowed limit of 2 MB.</div>';
+            messageDiv.style.display = 'block';
+            return true;
         }
-        return true;
     }
 
     // Check file size when file is selected
@@ -33,9 +42,13 @@
                 console.log('File selected:', this.files[0]);
                 if (this.files.length > 0) {
                     var file = this.files[0];
+                    validateFileSize(file);
                     if (!validateFileSize(file)) {
                         this.value = '';
+                        document.getElementById('file_size_message').innerHTML = '<div style="color: red; background-color: #ffe6e6; border: 1px solid #ff9999; padding: 10px; border-radius: 5px;">❌ File rejected. Please select a file smaller than 2 MB.</div>';
                     }
+                } else {
+                    document.getElementById('file_size_message').style.display = 'none';
                 }
             });
         }
