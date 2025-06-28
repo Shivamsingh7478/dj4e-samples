@@ -10,36 +10,49 @@
 </form>
 
 <script>
-    // Check file size before form submission
-    document.getElementById("upload_form").onsubmit = function(e) {
-        var fileInput = document.querySelector('input[name="picture"]');
-        if (fileInput && fileInput.files.length > 0) {
-            var file = fileInput.files[0];
-            var maxSize = 2 * 1024 * 1024; // 2MB
-            if (file.size > maxSize) {
-                alert("File size must be less than 2MB");
-                e.preventDefault();
-                return false;
-            }
+    console.log('JavaScript loaded for file size validation');
+    
+    // File size validation function
+    function validateFileSize(file) {
+        var maxSize = 2 * 1024 * 1024; // 2MB
+        console.log('Validating file size:', file.size, 'bytes');
+        if (file.size > maxSize) {
+            alert("File size must be less than 2MB");
+            return false;
         }
         return true;
-    };
+    }
 
     // Check file size when file is selected
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, setting up file validation');
         var fileInput = document.querySelector('input[name="picture"]');
+        console.log('Found file input:', fileInput);
         if (fileInput) {
             fileInput.addEventListener('change', function() {
+                console.log('File selected:', this.files[0]);
                 if (this.files.length > 0) {
                     var file = this.files[0];
-                    var maxSize = 2 * 1024 * 1024; // 2MB
-                    if (file.size > maxSize) {
-                        alert("File size must be less than 2MB");
+                    if (!validateFileSize(file)) {
                         this.value = '';
                     }
                 }
             });
         }
+    });
+
+    // Check file size before form submission
+    document.getElementById("upload_form").addEventListener('submit', function(e) {
+        console.log('Form submission attempted');
+        var fileInput = document.querySelector('input[name="picture"]');
+        if (fileInput && fileInput.files.length > 0) {
+            var file = fileInput.files[0];
+            if (!validateFileSize(file)) {
+                e.preventDefault();
+                return false;
+            }
+        }
+        return true;
     });
 </script>
 {% endblock %}
