@@ -10,8 +10,9 @@
 </form>
 
 <script>
+    // Check file size before form submission
     document.getElementById("upload_form").onsubmit = function(e) {
-        var fileInput = document.querySelector('input[type="file"]');
+        var fileInput = document.querySelector('input[name="picture"]');
         if (fileInput && fileInput.files.length > 0) {
             var file = fileInput.files[0];
             var maxSize = 2 * 1024 * 1024; // 2MB
@@ -23,5 +24,22 @@
         }
         return true;
     };
+
+    // Check file size when file is selected
+    document.addEventListener('DOMContentLoaded', function() {
+        var fileInput = document.querySelector('input[name="picture"]');
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    var file = this.files[0];
+                    var maxSize = 2 * 1024 * 1024; // 2MB
+                    if (file.size > maxSize) {
+                        alert("File size must be less than 2MB");
+                        this.value = '';
+                    }
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}
