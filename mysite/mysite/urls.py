@@ -19,9 +19,15 @@ from django.urls import path, include
 from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import FileResponse
+import os
 
 def redirect_to_ads(request):
     return redirect('ads:all')
+
+def favicon(request):
+    favicon_path = os.path.join(settings.STATIC_ROOT, 'favicon.ico')
+    return FileResponse(open(favicon_path, 'rb'), content_type='image/x-icon')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +35,7 @@ urlpatterns = [
     path('ads/', include('ads.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('oauth/', include('social_django.urls', namespace='social')),
+    path('favicon.ico', favicon, name='favicon'),
 ]
 
 # Add static files serving for development and production
