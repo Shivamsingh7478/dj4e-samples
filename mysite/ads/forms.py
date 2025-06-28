@@ -5,12 +5,12 @@ class CreateForm(forms.ModelForm):
     max_upload_limit = 2 * 1024 * 1024
     max_upload_limit_text = "2 MB"
 
-    file = forms.FileField(required=False, label='File to Upload')
-    upload_field_name = 'file'
+    picture = forms.FileField(required=False, label='Picture to Upload')
+    upload_field_name = 'picture'
 
     class Meta:
         model = Ad
-        fields = ['title', 'price', 'text', 'file']
+        fields = ['title', 'price', 'text', 'picture']
 
 class CommentForm(forms.ModelForm):
     class Meta:
