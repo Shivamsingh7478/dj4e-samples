@@ -1,6 +1,15 @@
 {% extends "base_bootstrap.html" %}
 {% block content %}
 <h1>Ads</h1>
+
+<!-- Search Form -->
+<form method="get" action="{% url 'ads:all' %}" style="margin-bottom: 20px;">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Search ads..." aria-label="Search ads">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </div>
+</form>
+
 <p>
 {% if ad_list %}
 <ul>

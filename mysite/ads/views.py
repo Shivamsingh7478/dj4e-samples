@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import HttpResponse
+from django.db.models import Q
 
 from .models import Ad, Comment, Fav
 from .forms import CreateForm, CommentForm
@@ -21,13 +22,21 @@ class AdListView(ListView):
 
     def get(self, request):
         ad_list = Ad.objects.all()
+        search = request.GET.get('search', '')
+        if search:
+            ad_list = ad_list.filter(
+                Q(title__icontains=search) |
+                Q(text__icontains=search) |
+                Q(tags__icontains=search)
+            )
+        
         favorites = list()
         if request.user.is_authenticated:
             # rows = [{'id': 2}, {'id': 4} ... ]  (A list of rows)
             rows = request.user.favorite_ads.values('id')
             # favorites = [2, 4, ...] using list comprehension
             favorites = [ row['id'] for row in rows ]
-        ctx = {'ad_list': ad_list, 'favorites': favorites}
+        ctx = {'ad_list': ad_list, 'favorites': favorites, 'search': search}
         return render(request, self.template_name, ctx)
 
 class AdDetailView(View):
