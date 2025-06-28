@@ -1,3 +1,6 @@
+{% extends 'base_bootstrap.html' %}
+
+{% block content %}
 <h2>{{ ad.title }} - ₹{{ ad.price }}</h2>
 <p>{{ ad.text }}</p>
 
@@ -21,3 +24,4 @@
   {{ comment_form.as_p }}
   <button type="submit">Add Comment</button>
 </form>
+{% endblock %}
