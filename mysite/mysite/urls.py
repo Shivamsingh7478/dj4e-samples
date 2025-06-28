@@ -19,15 +19,17 @@ from django.urls import path, include
 from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
-from django.http import FileResponse
-import os
+from django.http import HttpResponse
 
 def redirect_to_ads(request):
     return redirect('ads:all')
 
 def favicon(request):
-    favicon_path = os.path.join(settings.STATIC_ROOT, 'favicon.ico')
-    return FileResponse(open(favicon_path, 'rb'), content_type='image/x-icon')
+    # Return a simple favicon response
+    return HttpResponse(
+        b'\x00\x00\x01\x00\x01\x00\x10\x10\x00\x00\x01\x00\x20\x00\x68\x04\x00\x00\x16\x00\x00\x00',
+        content_type='image/x-icon'
+    )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
