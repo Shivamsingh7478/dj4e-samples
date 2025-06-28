@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r_+i3)(=)tj9x9v580%qv%u!fugr2^2+56r##yq3=8v9)a^_tz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -121,7 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT is already defined above for production
 
 # Add static files directories
 STATICFILES_DIRS = [
@@ -149,7 +149,7 @@ except ImportError:
     pass
 
 # Production settings for PythonAnywhere
-ALLOWED_HOSTS = ['shivamsingh747804.pythonanywhere.com']
+ALLOWED_HOSTS = ['shivamsingh747804.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 # Set DEBUG to False for production
 DEBUG = False
