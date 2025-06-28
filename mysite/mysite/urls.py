@@ -19,7 +19,6 @@ from django.urls import path, include
 from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import RedirectView
 
 def redirect_to_ads(request):
     return redirect('ads:all')
@@ -30,7 +29,6 @@ urlpatterns = [
     path('ads/', include('ads.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('oauth/', include('social_django.urls', namespace='social')),
-    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=True)),
 ]
 
 # Add static files serving for development
