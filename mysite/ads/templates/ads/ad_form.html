@@ -42,10 +42,9 @@
                 console.log('File selected:', this.files[0]);
                 if (this.files.length > 0) {
                     var file = this.files[0];
-                    validateFileSize(file);
-                    if (!validateFileSize(file)) {
+                    var isValid = validateFileSize(file);
+                    if (!isValid) {
                         this.value = '';
-                        document.getElementById('file_size_message').innerHTML = '<div style="color: red; background-color: #ffe6e6; border: 1px solid #ff9999; padding: 10px; border-radius: 5px;">❌ File rejected. Please select a file smaller than 2 MB.</div>';
                     }
                 } else {
                     document.getElementById('file_size_message').style.display = 'none';
