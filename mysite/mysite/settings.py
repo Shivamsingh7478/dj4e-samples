@@ -147,3 +147,12 @@ try:
     from .github_settings import *
 except ImportError:
     pass
+
+# Production settings for PythonAnywhere
+ALLOWED_HOSTS = ['shivamsingh747804.pythonanywhere.com']
+
+# Set DEBUG to False for production
+DEBUG = False
+
+# Configure static files for production
+STATIC_ROOT = '/home/shivamsingh747804/dj4e-samples/mysite/staticfiles'
