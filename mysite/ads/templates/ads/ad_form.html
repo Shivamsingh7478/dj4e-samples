@@ -5,66 +5,92 @@
 
 <form method="post" enctype="multipart/form-data" id="upload_form">
     {% csrf_token %}
-    {{ form.as_p }}
-    <div id="file_size_message" style="display: none; margin: 10px 0; padding: 10px; border-radius: 5px;"></div>
+    <div style="margin-bottom: 15px;">
+        <label for="{{ form.title.id_for_label }}">Title:</label>
+        {{ form.title }}
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label for="{{ form.price.id_for_label }}">Price:</label>
+        {{ form.price }}
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label for="{{ form.text.id_for_label }}">Text:</label>
+        {{ form.text }}
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label for="{{ form.picture.id_for_label }}">Picture to Upload:</label>
+        {{ form.picture }}
+        <span id="file_size_message" style="display: none; margin-left: 10px; padding: 5px 10px; border-radius: 3px; font-size: 0.9em;"></span>
+        <div style="color: #666; font-size: 0.8em; margin-top: 5px;">📁 File size limit: 2 MB maximum</div>
+    </div>
     <input type="submit" value="Submit">
 </form>
 
-<script>
-    console.log('JavaScript loaded for file size validation');
-    
-    // File size validation function
-    function validateFileSize(file) {
-        var maxSize = 2 * 1024 * 1024; // 2MB
-        console.log('Validating file size:', file.size, 'bytes');
+<script type="text/javascript">
+    // File size validation - this script checks uploaded file size
+    window.onload = function() {
+        console.log('File size validation script loaded');
         
-        var messageDiv = document.getElementById('file_size_message');
-        var fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        var form = document.getElementById('upload_form');
+        var fileInput = document.querySelector('input[type="file"]');
+        var messageSpan = document.getElementById('file_size_message');
         
-        if (file.size > maxSize) {
-            messageDiv.innerHTML = '<div style="color: red; background-color: #ffe6e6; border: 1px solid #ff9999; padding: 10px; border-radius: 5px;">❌ File size (' + fileSizeMB + ' MB) exceeds the maximum allowed size of 2 MB. Please select a smaller file.</div>';
-            messageDiv.style.display = 'block';
-            return false;
-        } else {
-            messageDiv.innerHTML = '<div style="color: green; background-color: #e6ffe6; border: 1px solid #99ff99; padding: 10px; border-radius: 5px;">✅ File size (' + fileSizeMB + ' MB) is within the allowed limit of 2 MB.</div>';
-            messageDiv.style.display = 'block';
-            return true;
-        }
-    }
-
-    // Check file size when file is selected
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded, setting up file validation');
-        var fileInput = document.querySelector('input[name="picture"]');
-        console.log('Found file input:', fileInput);
         if (fileInput) {
-            fileInput.addEventListener('change', function() {
-                console.log('File selected:', this.files[0]);
+            console.log('File input found:', fileInput);
+            
+            // Check file size when file is selected
+            fileInput.onchange = function() {
+                console.log('File selected');
                 if (this.files.length > 0) {
                     var file = this.files[0];
-                    var isValid = validateFileSize(file);
-                    if (!isValid) {
+                    var fileSize = file.size;
+                    var maxSize = 2 * 1024 * 1024; // 2MB
+                    var fileSizeMB = (fileSize / (1024 * 1024)).toFixed(2);
+                    
+                    console.log('File size:', fileSize, 'bytes, Max size:', maxSize);
+                    
+                    if (fileSize > maxSize) {
+                        messageSpan.innerHTML = '❌ ' + fileSizeMB + ' MB (too large)';
+                        messageSpan.style.display = 'inline';
+                        messageSpan.style.color = 'red';
+                        messageSpan.style.backgroundColor = '#ffe6e6';
+                        messageSpan.style.border = '1px solid #ff9999';
                         this.value = '';
+                        console.log('File rejected - too large');
+                    } else {
+                        messageSpan.innerHTML = '✅ ' + fileSizeMB + ' MB (OK)';
+                        messageSpan.style.display = 'inline';
+                        messageSpan.style.color = 'green';
+                        messageSpan.style.backgroundColor = '#e6ffe6';
+                        messageSpan.style.border = '1px solid #99ff99';
+                        console.log('File accepted - size OK');
                     }
                 } else {
-                    document.getElementById('file_size_message').style.display = 'none';
+                    messageSpan.style.display = 'none';
                 }
-            });
+            };
         }
-    });
-
-    // Check file size before form submission
-    document.getElementById("upload_form").addEventListener('submit', function(e) {
-        console.log('Form submission attempted');
-        var fileInput = document.querySelector('input[name="picture"]');
-        if (fileInput && fileInput.files.length > 0) {
-            var file = fileInput.files[0];
-            if (!validateFileSize(file)) {
-                e.preventDefault();
-                return false;
-            }
+        
+        // Check file size before form submission
+        if (form) {
+            form.onsubmit = function(e) {
+                console.log('Form submission check');
+                var fileInput = document.querySelector('input[type="file"]');
+                if (fileInput && fileInput.files.length > 0) {
+                    var file = fileInput.files[0];
+                    var fileSize = file.size;
+                    var maxSize = 2 * 1024 * 1024; // 2MB
+                    
+                    console.log('Submitting file size:', fileSize, 'bytes');
+                    
+                    if (fileSize > maxSize) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+                return true;
+            };
         }
-        return true;
-    });
+    };
 </script>
 {% endblock %}
