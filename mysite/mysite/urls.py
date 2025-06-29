@@ -38,7 +38,6 @@ def tutorial01_index(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', redirect_to_ads, name='home'),
-    # path('home/', include('home.urls')),  # Commented out to avoid import issues
     path('tutorial01/', tutorial01_index, name='tutorial01_index'),
     path('ads/', include('ads.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
