@@ -34,6 +34,7 @@ def favicon(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', redirect_to_ads, name='home'),
+    path('home/', include('home.urls')),
     path('ads/', include('ads.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('oauth/', include('social_django.urls', namespace='social')),
