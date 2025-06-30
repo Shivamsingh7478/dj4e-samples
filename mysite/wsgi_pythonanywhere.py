@@ -1,12 +1,12 @@
 import os
 import sys
 
-# Add your project directory to the sys.path
-path = '/home/shivamsingh747804/dj4e-samples/mysite'
+# Add the parent directory of your project to the sys.path
+path = '/home/shivamsingh747804/dj4e-samples'
 if path not in sys.path:
-    sys.path.append(path)
+    sys.path.insert(0, path)
 
-# Set the Django settings module
+# Set the Django settings module to point to your mysite settings
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
 
 # Serve Django via WSGI
