@@ -1,11 +1,12 @@
 {% extends "base_bootstrap.html" %}
+
 {% block content %}
   <h1>Auto List</h1>
   {% if auto_list %}
     <ul>
       {% for auto in auto_list %}
         <li>
-            <a href="#">{{ auto.nickname }}</a>
+            {{ auto.nickname }} ({{ auto.make }})
         </li>
       {% endfor %}
     </ul>
@@ -13,6 +14,7 @@
     <p>There are no autos in the library.</p>
   {% endif %}
   <p>
-    <a href="#">Add an Auto</a>
+    <a href="#">Add an auto</a> |
+    <a href="#">Add a make</a>
   </p>
 {% endblock %} 
