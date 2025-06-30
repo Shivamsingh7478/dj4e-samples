@@ -18,6 +18,7 @@ class Ad(models.Model):
         related_name='comments_owned'
     )
 
+
     # Favorites
     favorites = models.ManyToManyField(settings.AUTH_USER_MODEL,
         through='Fav', related_name='favorite_ads')
