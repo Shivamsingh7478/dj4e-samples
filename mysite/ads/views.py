@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.db.models import Q
 
-from .models import Ad, Comment, Fav
+from .models import Ad, Comment, Fav, Auto
 from .forms import CreateForm, CommentForm
 
 # csrf exemption in class based views
@@ -137,3 +137,36 @@ class DeleteFavoriteView(LoginRequiredMixin, View):
 
 def AdAutosView(request):
     return HttpResponse("This is the autos view.")
+
+class AdAutosListView(LoginRequiredMixin, View):
+    model = Auto
+    template_name = "ads/auto_list.html"
+
+    def get(self, request):
+        auto_list = Auto.objects.all()
+        ctx = {'auto_list': auto_list}
+        return render(request, self.template_name, ctx)
+
+class AdListView(LoginRequiredMixin, View):
+    model = Ad
+    template_name = 'ads/ad_list.html'
+    context_object_name = 'ad_list'
+
+    def get(self, request):
+        ad_list = Ad.objects.all()
+        search = request.GET.get('search', '')
+        if search:
+            ad_list = ad_list.filter(
+                Q(title__icontains=search) |
+                Q(text__icontains=search) |
+                Q(tags__icontains=search)
+            )
+        
+        favorites = list()
+        if request.user.is_authenticated:
+            # rows = [{'id': 2}, {'id': 4} ... ]  (A list of rows)
+            rows = request.user.favorite_ads.values('id')
+            # favorites = [2, 4, ...] using list comprehension
+            favorites = [ row['id'] for row in rows ]
+        ctx = {'ad_list': ad_list, 'favorites': favorites, 'search': search}
+        return render(request, self.template_name, ctx)

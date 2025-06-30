@@ -26,6 +26,15 @@ class Ad(models.Model):
     def __str__(self):
         return self.title
 
+class Auto(models.Model):
+    nickname = models.CharField(max_length=200)
+    make = models.CharField(max_length=200)
+    mileage = models.PositiveIntegerField()
+    comments = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.nickname
+
 class Comment(models.Model):
     text = models.TextField(validators=[MinLengthValidator(3)])
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
