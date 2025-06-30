@@ -38,11 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home',
-    'hello',
-    'ads',
-    'social_django',
+    'home.apps.HomeConfig',
+    'ads.apps.AdsConfig',
     'polls.apps.PollsConfig',
+    'hello.apps.HelloConfig',
+    'cats',
+
+    # Extensions
+    'django_extensions',
+    'social_django',
 ]
 
 MIDDLEWARE = [
