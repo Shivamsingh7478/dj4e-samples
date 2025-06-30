@@ -6,8 +6,8 @@
       {% for make in make_list %}
         <li>
             {{ make.name }}
-          (<a href="/ads/makes/{{ make.id }}/update">Update</a> |
-          <a href="/ads/makes/{{ make.id }}/delete">Delete</a>)
+          (<a href="{% url 'ads:make_update' make.id %}">Update</a> |
+          <a href="{% url 'ads:make_delete' make.id %}">Delete</a>)
         </li>
       {% endfor %}
     </ul>
@@ -15,9 +15,9 @@
     <p>There are no makes in the library.</p>
   {% endif %}
   <p>
-    <a href="/ads/makes/create">Add a make</a>
+    <a href="{% url 'ads:make_create' %}">Add a make</a>
   </p>
   <p>
-    <a href="/ads/autos">Back to autos</a>
+    <a href="{% url 'ads:autos' %}">Back to autos</a>
   </p>
 {% endblock %} 
