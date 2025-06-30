@@ -169,13 +169,13 @@ class AutoUpdateView(LoginRequiredMixin, View):
     template = 'ads/auto_form.html'
     success_url = reverse_lazy('ads:autos')
     def get(self, request, pk):
-        auto = get_object_or_404(self.model, pk=pk, owner=request.user)
+        auto = get_object_or_404(self.model, pk=pk)
         form = AutoForm(instance=auto)
         ctx = {'form': form}
         return render(request, self.template, ctx)
 
     def post(self, request, pk):
-        auto = get_object_or_404(self.model, pk=pk, owner=request.user)
+        auto = get_object_or_404(self.model, pk=pk)
         form = AutoForm(request.POST, instance=auto)
         if not form.is_valid():
             ctx = {'form': form}
@@ -223,13 +223,13 @@ class MakeUpdateView(LoginRequiredMixin, View):
     template = 'ads/make_form.html'
     success_url = reverse_lazy('ads:autos')
     def get(self, request, pk):
-        make = get_object_or_404(self.model, pk=pk, owner=request.user)
+        make = get_object_or_404(self.model, pk=pk)
         form = MakeForm(instance=make)
         ctx = {'form': form}
         return render(request, self.template, ctx)
 
     def post(self, request, pk):
-        make = get_object_or_404(self.model, pk=pk, owner=request.user)
+        make = get_object_or_404(self.model, pk=pk)
         form = MakeForm(request.POST, instance=make)
         if not form.is_valid():
             ctx = {'form': form}
