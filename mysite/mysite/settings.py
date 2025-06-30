@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ads',
     'social_django',
-    'polls',
+    'polls.apps.PollsConfig',
 ]
 
 MIDDLEWARE = [
