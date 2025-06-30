@@ -1,6 +1,7 @@
 {% extends "base_bootstrap.html" %}
 {% block content %}
 <h1>Cats CRUD</h1>
+<a href="#">Add a breed</a>
 {% if not user.is_authenticated %}
 <form method="post" action="/accounts/login/">
   {% csrf_token %}
