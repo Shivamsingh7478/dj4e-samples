@@ -30,6 +30,7 @@ class Make(models.Model):
     name = models.CharField(max_length=200,
         help_text='Enter a make (e.g. Dodge)',
         validators=[MinLengthValidator(2, "Make must be greater than 1 character")])
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -41,6 +42,7 @@ class Auto(models.Model):
     mileage = models.PositiveIntegerField()
     comments = models.CharField(max_length=300)
     make = models.ForeignKey('Make', on_delete=models.CASCADE, null=False)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nickname

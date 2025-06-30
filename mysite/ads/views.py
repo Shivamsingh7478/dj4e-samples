@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.db.models import Q
 
 from .models import Ad, Comment, Fav, Auto, Make
-from .forms import CreateForm, CommentForm, MakeForm
+from .forms import CreateForm, CommentForm, MakeForm, AutoForm
 
 # csrf exemption in class based views
 # https://stackoverflow.com/questions/16458166/how-to-disable-djangos-csrf-validation
@@ -149,17 +149,19 @@ class AutoCreateView(LoginRequiredMixin, View):
     template = 'ads/auto_form.html'
     success_url = reverse_lazy('ads:autos')
     def get(self, request):
-        form = MakeForm()
+        form = AutoForm()
         ctx = {'form': form}
         return render(request, self.template, ctx)
 
     def post(self, request):
-        form = MakeForm(request.POST)
+        form = AutoForm(request.POST)
         if not form.is_valid():
             ctx = {'form': form}
             return render(request, self.template, ctx)
 
-        make = form.save()
+        auto = form.save(commit=False)
+        auto.owner = request.user
+        auto.save()
         return redirect(self.success_url)
 
 class AutoUpdateView(LoginRequiredMixin, View):
@@ -168,13 +170,13 @@ class AutoUpdateView(LoginRequiredMixin, View):
     success_url = reverse_lazy('ads:autos')
     def get(self, request, pk):
         auto = get_object_or_404(self.model, pk=pk, owner=request.user)
-        form = MakeForm(instance=auto)
+        form = AutoForm(instance=auto)
         ctx = {'form': form}
         return render(request, self.template, ctx)
 
     def post(self, request, pk):
         auto = get_object_or_404(self.model, pk=pk, owner=request.user)
-        form = MakeForm(request.POST, instance=auto)
+        form = AutoForm(request.POST, instance=auto)
         if not form.is_valid():
             ctx = {'form': form}
             return render(request, self.template, ctx)
@@ -186,6 +188,11 @@ class AutoDeleteView(LoginRequiredMixin, DeleteView):
     model = Auto
     template_name = "ads/auto_confirm_delete.html"
     success_url = reverse_lazy('ads:autos')
+
+    def get_queryset(self):
+        print('delete get_queryset called')
+        qs = super(AutoDeleteView, self).get_queryset()
+        return qs.filter(owner=self.request.user)
 
 # Makes
 class MakeListView(LoginRequiredMixin, ListView):
@@ -206,7 +213,9 @@ class MakeCreateView(LoginRequiredMixin, View):
             ctx = {'form': form}
             return render(request, self.template, ctx)
 
-        make = form.save()
+        make = form.save(commit=False)
+        make.owner = request.user
+        make.save()
         return redirect(self.success_url)
 
 class MakeUpdateView(LoginRequiredMixin, View):
@@ -233,6 +242,11 @@ class MakeDeleteView(LoginRequiredMixin, DeleteView):
     model = Make
     template_name = "ads/make_confirm_delete.html"
     success_url = reverse_lazy('ads:autos')
+
+    def get_queryset(self):
+        print('delete get_queryset called')
+        qs = super(MakeDeleteView, self).get_queryset()
+        return qs.filter(owner=self.request.user)
 
 class AdAutosListView(LoginRequiredMixin, View):
     model = Auto

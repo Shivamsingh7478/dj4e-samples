@@ -1,5 +1,5 @@
 from django import forms
-from ads.models import Ad, Comment, Make
+from ads.models import Ad, Comment, Make, Auto
 
 class CreateForm(forms.ModelForm):
     max_upload_limit = 2 * 1024 * 1024
@@ -15,7 +15,12 @@ class CreateForm(forms.ModelForm):
 class MakeForm(forms.ModelForm):
     class Meta:
         model = Make
-        fields = '__all__'
+        fields = ['name']
+
+class AutoForm(forms.ModelForm):
+    class Meta:
+        model = Auto
+        fields = ['nickname', 'mileage', 'comments', 'make']
 
 class CommentForm(forms.ModelForm):
     class Meta:
