@@ -1,0 +1,12 @@
+{% extends "base_menu.html" %}
+{% block content %}
+<h1>{{ object.title }}</h1>
+<p>Price: ${{ object.price }}</p>
+<p>{{ object.text }}</p>
+<p>Posted by: {{ object.owner.username }}</p>
+{% if object.owner == user %}
+  <a href="{% url 'ads:ad_update' object.id %}">Edit</a>
+  <a href="{% url 'ads:ad_delete' object.id %}">Delete</a>
+{% endif %}
+<a href="{% url 'ads:all' %}">Back to all ads</a>
+{% endblock %} 

@@ -17,47 +17,41 @@ Including another URLconf
 import os
 from django.contrib import admin
 from django.urls import path, include, re_path
-from django.views.generic import TemplateView
-from django.shortcuts import redirect
 from django.conf import settings
-from django.conf.urls.static import static
-from django.http import HttpResponse
+from django.contrib.auth import views as auth_views
 from django.views.static import serve
-
-def redirect_to_ads(request):
-    return redirect('ads:all')
-
-def favicon(request):
-    # Return a simple favicon response
-    return HttpResponse(
-        b'\x00\x00\x01\x00\x01\x00\x10\x10\x00\x00\x01\x00\x20\x00\x68\x04\x00\x00\x16\x00\x00\x00',
-        content_type='image/x-icon'
-    )
-
-# Django Tutorial 01 Assignment View
-def tutorial01_index(request):
-    return HttpResponse("Hello, world. 52883377 is the polls index.")
-
-# Up two folders to serve "site" content
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE_ROOT = os.path.join(BASE_DIR, 'site')
+from django.views.generic import TemplateView
 
 urlpatterns = [
+    path('', include('home.urls')),
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='home/main.html'), name='home'),
-    # path('tutorial01/', tutorial01_index, name='tutorial01_index'),
-    path('ads/', include('ads.urls')),
-    path('polls/', include('polls.urls')),
-    path('hello/', include('hello.urls')),
-    path('cats/', include('cats.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('oauth/', include('social_django.urls', namespace='social')),
-    path('favicon.ico', favicon, name='favicon'),
+    re_path(r'^oauth/', include('social_django.urls', namespace='social')),
+]
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+urlpatterns += [
     re_path(r'^site/(?P<path>.*)$', serve,
-        {'document_root': SITE_ROOT, 'show_indexes': True},
+        {'document_root': os.path.join(BASE_DIR, 'site'),
+         'show_indexes': True},
         name='site_path'
+        ),
+]
+
+urlpatterns += [
+    path('favicon.ico', serve, {
+            'path': 'favicon.ico',
+            'document_root': os.path.join(BASE_DIR, 'home/static'),
+        }
     ),
 ]
 
-# Add static files serving for development and production
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+try:
+    from . import github_settings
+    social_login = 'registration/login_social.html'
+    urlpatterns.insert(0,
+                       path('accounts/login/', auth_views.LoginView.as_view(template_name=social_login))
+                       )
+    print('Using', social_login, 'as the login template')
+except:
+    print('Using registration/login.html as the login template')
