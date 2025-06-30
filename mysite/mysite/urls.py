@@ -46,6 +46,7 @@ urlpatterns = [
     path('', redirect_to_ads, name='home'),
     path('tutorial01/', tutorial01_index, name='tutorial01_index'),
     path('ads/', include('ads.urls')),
+    path('polls/', include('polls.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('oauth/', include('social_django.urls', namespace='social')),
     path('favicon.ico', favicon, name='favicon'),
