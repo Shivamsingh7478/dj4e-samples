@@ -134,3 +134,6 @@ class DeleteFavoriteView(LoginRequiredMixin, View):
             pass
 
         return HttpResponse("Favorite deleted 42")
+
+def AdAutosView(request):
+    return HttpResponse("This is the autos view.")
