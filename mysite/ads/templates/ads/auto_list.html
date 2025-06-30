@@ -7,6 +7,8 @@
       {% for auto in auto_list %}
         <li>
             {{ auto.nickname }} ({{ auto.make }})
+          (<a href="{% url 'ads:auto_update' auto.id %}">Update</a> |
+          <a href="{% url 'ads:auto_delete' auto.id %}">Delete</a>)
         </li>
       {% endfor %}
     </ul>
@@ -14,8 +16,9 @@
     <p>There are no autos in the library.</p>
   {% endif %}
   <p>
-    <a href="#">Add an auto</a> |
-    <a href="#">Add a make</a> |
-    <a href="#">View makes</a>
+    {% if make_count > 0 %}
+    <a href="{% url 'ads:auto_create' %}">Add an auto</a> |
+    {% endif %}
+    <a href="{% url 'ads:makes' %}">View makes ({{ make_count }})</a>
   </p>
 {% endblock %} 

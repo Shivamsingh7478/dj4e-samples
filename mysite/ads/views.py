@@ -6,8 +6,8 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.db.models import Q
 
-from .models import Ad, Comment, Fav, Auto
-from .forms import CreateForm, CommentForm
+from .models import Ad, Comment, Fav, Auto, Make
+from .forms import CreateForm, CommentForm, MakeForm
 
 # csrf exemption in class based views
 # https://stackoverflow.com/questions/16458166/how-to-disable-djangos-csrf-validation
@@ -135,8 +135,104 @@ class DeleteFavoriteView(LoginRequiredMixin, View):
 
         return HttpResponse("Favorite deleted 42")
 
-def AdAutosView(request):
-    return HttpResponse("This is the autos view.")
+# Autos
+class AutoListView(LoginRequiredMixin, ListView):
+    model = Auto
+    template_name = "ads/auto_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['make_count'] = Make.objects.all().count()
+        return context
+
+class AutoCreateView(LoginRequiredMixin, View):
+    template = 'ads/auto_form.html'
+    success_url = reverse_lazy('ads:autos')
+    def get(self, request):
+        form = MakeForm()
+        ctx = {'form': form}
+        return render(request, self.template, ctx)
+
+    def post(self, request):
+        form = MakeForm(request.POST)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template, ctx)
+
+        make = form.save()
+        return redirect(self.success_url)
+
+class AutoUpdateView(LoginRequiredMixin, View):
+    model = Auto
+    template = 'ads/auto_form.html'
+    success_url = reverse_lazy('ads:autos')
+    def get(self, request, pk):
+        auto = get_object_or_404(self.model, pk=pk, owner=request.user)
+        form = MakeForm(instance=auto)
+        ctx = {'form': form}
+        return render(request, self.template, ctx)
+
+    def post(self, request, pk):
+        auto = get_object_or_404(self.model, pk=pk, owner=request.user)
+        form = MakeForm(request.POST, instance=auto)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template, ctx)
+
+        form.save()
+        return redirect(self.success_url)
+
+class AutoDeleteView(LoginRequiredMixin, DeleteView):
+    model = Auto
+    template_name = "ads/auto_confirm_delete.html"
+    success_url = reverse_lazy('ads:autos')
+
+# Makes
+class MakeListView(LoginRequiredMixin, ListView):
+    model = Make
+    template_name = "ads/make_list.html"
+
+class MakeCreateView(LoginRequiredMixin, View):
+    template = 'ads/make_form.html'
+    success_url = reverse_lazy('ads:autos')
+    def get(self, request):
+        form = MakeForm()
+        ctx = {'form': form}
+        return render(request, self.template, ctx)
+
+    def post(self, request):
+        form = MakeForm(request.POST)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template, ctx)
+
+        make = form.save()
+        return redirect(self.success_url)
+
+class MakeUpdateView(LoginRequiredMixin, View):
+    model = Make
+    template = 'ads/make_form.html'
+    success_url = reverse_lazy('ads:autos')
+    def get(self, request, pk):
+        make = get_object_or_404(self.model, pk=pk, owner=request.user)
+        form = MakeForm(instance=make)
+        ctx = {'form': form}
+        return render(request, self.template, ctx)
+
+    def post(self, request, pk):
+        make = get_object_or_404(self.model, pk=pk, owner=request.user)
+        form = MakeForm(request.POST, instance=make)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template, ctx)
+
+        form.save()
+        return redirect(self.success_url)
+
+class MakeDeleteView(LoginRequiredMixin, DeleteView):
+    model = Make
+    template_name = "ads/make_confirm_delete.html"
+    success_url = reverse_lazy('ads:autos')
 
 class AdAutosListView(LoginRequiredMixin, View):
     model = Auto

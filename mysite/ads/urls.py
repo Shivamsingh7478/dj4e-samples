@@ -4,7 +4,16 @@ from . import views
 app_name = 'ads'
 
 urlpatterns = [
-    path('autos', views.AdAutosListView.as_view(), name='autos_list'),
+    path('autos', views.AutoListView.as_view(), name='autos'),
+    path('auto/create/', views.AutoCreateView.as_view(), name='auto_create'),
+    path('auto/<int:pk>/update/', views.AutoUpdateView.as_view(), name='auto_update'),
+    path('auto/<int:pk>/delete/', views.AutoDeleteView.as_view(), name='auto_delete'),
+
+    path('makes', views.MakeListView.as_view(), name='makes'),
+    path('make/create/', views.MakeCreateView.as_view(), name='make_create'),
+    path('make/<int:pk>/update/', views.MakeUpdateView.as_view(), name='make_update'),
+    path('make/<int:pk>/delete/', views.MakeDeleteView.as_view(), name='make_delete'),
+
     path('', views.AdListView.as_view(), name='all'),
     path('ad/<int:pk>/', views.AdDetailView.as_view(), name='ad_detail'),
     path('ad/create/', views.AdCreateView.as_view(), name='ad_create'),
