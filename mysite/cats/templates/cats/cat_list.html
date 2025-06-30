@@ -1,22 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="dj4e" content="6dee7f5a0a3c09cbbfdda54f0a859a33">
-<meta name="dj4e-code" content="42175128261930">
-<title>Cats CRUD</title>
-</head>
-<body>
-<h1>Cats CRUD</h1>
-<a href="#">Add a breed</a>
-{% if not user.is_authenticated %}
-<form method="post" action="/accounts/login/">
-  {% csrf_token %}
-  <input type="text" name="username" placeholder="Username" required>
-  <input type="password" name="password" placeholder="Password" required>
-  <button type="submit">Login</button>
-</form>
-{% else %}
-<p>Welcome, {{ user.username }}!</p>
-{% endif %}
-</body>
-</html> 
+{% extends "base_bootstrap.html" %}
+{% block content %}
+<h1>Cats</h1>
+<a href="{% url 'cats:cat_create' %}">Add a cat</a> |
+<a href="{% url 'cats:breed_list' %}">View breeds</a>
+<ul>
+  {% for cat in object_list %}
+    <li>
+      {{ cat.nickname }} ({{ cat.breed.name }})
+      <a href="{% url 'cats:cat_update' cat.id %}">Edit</a>
+      <a href="{% url 'cats:cat_delete' cat.id %}">Delete</a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %} 
