@@ -172,3 +172,8 @@ REST_FRAMEWORK = {
 
 LOGOUT_REDIRECT_URL = '/'
 STATIC_ROOT = '/home/shivamsingh747804/dj4e-samples/staticfiles'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://shivamsingh747804.pythonanywhere.com',
+    'https://www.dj4e.com'
+]
