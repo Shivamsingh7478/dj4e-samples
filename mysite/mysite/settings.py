@@ -171,4 +171,4 @@ REST_FRAMEWORK = {
 }
 
 LOGOUT_REDIRECT_URL = '/'
-STATIC_ROOT = '/home/shivamsingh747804/dj4e-samples/staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
