@@ -1,0 +1,10 @@
+{% extends 'base_bootstrap.html' %}
+{% block content %}
+<meta name="dj4e" content="6dee7f5a0a3c09cbbfdda54f0a859a33">
+<h2>Cat Form</h2>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Save</button>
+  <a href="{% url 'cat_list' %}">Cancel</a>
+</form>
+{% endblock %} 

@@ -1,14 +1,22 @@
 {% extends "base_bootstrap.html" %}
 {% block content %}
-<h1>Cats</h1>
-<a href="{% url 'cats:breed_list' %}">Add a breed</a>
-<ul>
+<meta name="dj4e" content="6dee7f5a0a3c09cbbfdda54f0a859a33">
+<h2>Cats</h2>
+<a href="{% url 'cat_create' %}">Add Cat</a> |
+<a href="{% url 'breed_list' %}">Manage Breeds</a>
+<table>
+  <tr><th>Nickname</th><th>Weight</th><th>Foods</th><th>Breed</th><th>Actions</th></tr>
   {% for cat in object_list %}
-    <li>
-      {{ cat.nickname }} ({{ cat.breed.name }})
-      <a href="{% url 'cats:cat_update' cat.id %}">Edit</a>
-      <a href="{% url 'cats:cat_delete' cat.id %}">Delete</a>
-    </li>
+    <tr>
+      <td>{{ cat.nickname }}</td>
+      <td>{{ cat.weight }}</td>
+      <td>{{ cat.foods }}</td>
+      <td>{{ cat.breed.name }}</td>
+      <td>
+        <a href="{% url 'cat_update' cat.pk %}">Edit</a>
+        <a href="{% url 'cat_delete' cat.pk %}">Delete</a>
+      </td>
+    </tr>
   {% endfor %}
-</ul>
+</table>
 {% endblock %} 
