@@ -152,7 +152,7 @@ ALLOWED_HOSTS = ['*', 'shivamsingh747804.pythonanywhere.com', '127.0.0.1', 'loca
 DEBUG = False
 
 # Configure static files for production
-STATIC_ROOT = '/home/shivamsingh747804/dj4e-samples/staticfiles'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -184,3 +184,4 @@ REST_FRAMEWORK = {
 }
 
 LOGOUT_REDIRECT_URL = '/'
+STATIC_ROOT = '/home/shivamsingh747804/dj4e-samples/staticfiles'
