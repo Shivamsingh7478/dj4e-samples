@@ -24,17 +24,19 @@
   <button type="submit">Submit</button>
 </form>
 <hr>
-<!-- Static table for autograder to find the last submitted ad -->
+<!-- Dynamic table for autograder to find all ads -->
 <table class="table">
   <tr>
     <th>Title</th>
     <th>price</th>
     <th>Text</th>
   </tr>
+  {% for ad in ads %}
   <tr>
-    <td>HHGTTG_41 07:02:00</td>
-    <td>0.41</td>
-    <td>Low cost Vogon poetry.</td>
+    <td>{{ ad.title }}</td>
+    <td>{{ ad.price }}</td>
+    <td>{{ ad.text }}</td>
   </tr>
+  {% endfor %}
 </table>
 {% endblock %} 
