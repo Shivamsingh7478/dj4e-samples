@@ -21,10 +21,20 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.views.static import serve
 from django.views.generic import TemplateView
+from ads.models import Ad
+from django.shortcuts import render
+
+def custom_login(request, *args, **kwargs):
+    from django.contrib.auth.forms import AuthenticationForm
+    ads = Ad.objects.all()
+    form = AuthenticationForm(request, data=request.POST or None)
+    context = {'form': form, 'ads': ads}
+    return render(request, 'registration/login.html', context)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
+    path('accounts/login/', custom_login, name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
     path('ads/', include('ads.urls')),
