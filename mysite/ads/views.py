@@ -1,7 +1,7 @@
 from ads.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 from .models import Ad
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DeleteView
 
 class AdListView(LoginRequiredMixin, OwnerListView):
     model = Ad
@@ -25,6 +25,7 @@ class AdUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "ads/ad_form.html"
     success_url = '/ads/'
 
-class AdDeleteView(OwnerDeleteView):
+class AdDeleteView(LoginRequiredMixin, DeleteView):
     model = Ad
-    template_name = "ads/ad_confirm_delete.html" 
+    template_name = "ads/ad_confirm_delete.html"
+    success_url = '/ads/' 
