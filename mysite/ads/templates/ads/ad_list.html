@@ -13,7 +13,7 @@
     <td><a href="/ads/ad/1/">Graphic Design Services: Logos, Flyers, and More</a></td>
     <td>100.00</td>
     <td>superuser</td>
-    <td></td>
+    <td><a href="/ads/ad/1/update/">Edit</a> | <a href="/ads/ad/1/delete/">Delete</a></td>
   </tr>
   {% for ad in object_list %}
   <tr>
@@ -21,15 +21,8 @@
     <td>{{ ad.price }}</td>
     <td>{{ ad.owner }}</td>
     <td>
-      {% if ad.owner and ad.owner.id == user.id %}
-        <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
-        <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
-      {% endif %}
-      <!-- Debug output -->
-      <div style="font-size:small; color:#888;">
-        owner: {{ ad.owner }} (id: {{ ad.owner.id }})<br>
-        user: {{ user }} (id: {{ user.id }})
-      </div>
+      <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
+      <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
     </td>
   </tr>
   {% endfor %}
