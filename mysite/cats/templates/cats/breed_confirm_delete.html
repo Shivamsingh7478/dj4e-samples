@@ -1,7 +1,10 @@
-{% extends "base_bootstrap.html" %}
+{% extends 'base_bootstrap.html' %}
+{% block head %}
+<meta name="dj4e" content="6dee7f5a0a3c09cbbfdda54f0a859a33">
+{% endblock %}
 {% block content %}
 <h1>Delete Breed</h1>
-<p>Are you sure you want to delete {{ object.name }}?</p>
+<p>Are you sure you want to delete "{{ object }}"?</p>
 <form method="post">{% csrf_token %}
   <button type="submit">Yes, delete</button>
   <a href="{% url 'cats:breed_list' %}">Cancel</a>

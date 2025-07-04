@@ -1,9 +1,13 @@
 {% extends "base_bootstrap.html" %}
+{% block head %}
+<meta name="dj4e" content="6dee7f5a0a3c09cbbfdda54f0a859a33">
+{% endblock %}
 {% block content %}
-<h1>Cat Form</h1>
+<h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Cat</h1>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Save</button>
+  <a href="{% url 'all' %}">Cancel</a>
 </form>
 {% endblock %} 
