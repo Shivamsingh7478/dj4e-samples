@@ -4,7 +4,11 @@
 {% endblock %}
 {% block content %}
 <h1>Cats</h1>
-<p><a href="{% url 'cat_create' %}">Add Cat</a> | <a href="{% url 'breed_list' %}">Manage Breeds</a></p>
+<p>
+  <a href="{% url 'cat_create' %}">Add Cat</a> |
+  <a href="{% url 'breed_create' %}">Add a breed</a> |
+  <a href="{% url 'breed_list' %}">Manage Breeds</a>
+</p>
 <table>
 <tr><th>Nickname</th><th>Breed</th><th>Weight</th><th>Foods</th><th>Actions</th></tr>
 {% for cat in cat_list %}
