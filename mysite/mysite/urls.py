@@ -25,6 +25,7 @@ from ads.models import Ad
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
+from django.http import JsonResponse
 
 def custom_login(request, *args, **kwargs):
     try:
@@ -34,14 +35,20 @@ def custom_login(request, *args, **kwargs):
         
         if request.method == 'POST':
             if request.POST.get('form_type') == 'create_ad':
-                # Create the ad
                 new_ad = Ad.objects.create(
                     title=request.POST.get('title', ''),
                     price=request.POST.get('price', ''),
                     text=request.POST.get('text', ''),
                     owner=request.user if request.user.is_authenticated else None
                 )
-                # Get the most recently created ad (should be the one we just created)
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'id': new_ad.id,
+                        'title': new_ad.title,
+                        'price': str(new_ad.price),
+                        'text': new_ad.text
+                    })
+                # fallback for normal POST
                 latest_ad = Ad.objects.order_by('-created_at').first()
                 latest_ad_data = {
                     'id': latest_ad.id,
@@ -55,7 +62,6 @@ def custom_login(request, *args, **kwargs):
                 auth_login(request, form.get_user())
                 return redirect('/')
         
-        # Get the most recently created ad for display
         latest_ad = Ad.objects.order_by('-created_at').first()
         latest_ad_data = None
         if latest_ad:
@@ -65,12 +71,10 @@ def custom_login(request, *args, **kwargs):
                 'price': str(latest_ad.price),
                 'text': latest_ad.text
             }
-        
         context = {'form': form, 'ads': ads, 'latest_ad': latest_ad_data}
         return render(request, 'registration/login.html', context)
     except Exception as e:
         print(f"Login error: {e}")
-        # Fallback to simple login if there's an error
         form = AuthenticationForm(request, data=request.POST or None)
         if request.method == 'POST' and form.is_valid():
             auth_login(request, form.get_user())
