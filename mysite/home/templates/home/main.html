@@ -1,12 +1,7 @@
-<h1>Django All-in-One Examples</h1>
-<p>
-This is a sample application to demonstrate the various features of Django.
-</p>
-<ul>
-<li><a href="/ads">Autos CRUD</a></li>
-<li><a href="/polls">Polls application</a></li>
-<li><a href="/hello">Session test</a></li>
-<li><a href="/autos">Autos CRUD</a></li>
-<li><a href="/cats">Cats CRUD</a></li>
-</ul>
-{% endblock %} 
+{% extends "base_menu.html" %}
+{% block content %}
+    <h1>Welcome to {{ settings.APP_NAME }}</h1>
+    <p>
+    Hello world.
+    </p>
+{% endblock content %} 
