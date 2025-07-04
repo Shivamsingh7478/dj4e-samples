@@ -48,7 +48,7 @@ def custom_login(request, *args, **kwargs):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
-    path('accounts/login/', custom_login, name='login'),
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
     path('ads/', include('ads.urls')),
