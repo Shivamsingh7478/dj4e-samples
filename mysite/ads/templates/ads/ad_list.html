@@ -21,7 +21,7 @@
     <td>{{ ad.price }}</td>
     <td>{{ ad.owner }}</td>
     <td>
-      {% if ad.owner == user %}
+      {% if ad.owner and ad.owner.id == user.id %}
         <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
         <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
       {% endif %}
