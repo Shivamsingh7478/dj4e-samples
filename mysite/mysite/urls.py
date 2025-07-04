@@ -27,33 +27,43 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 
 def custom_login(request, *args, **kwargs):
-    ads = Ad.objects.all()
-    latest_ad = request.session.get('latest_created_ad')
-    form = AuthenticationForm(request, data=request.POST or None)
-    
-    if request.method == 'POST':
-        if request.POST.get('form_type') == 'create_ad':
-            # Create the ad
-            new_ad = Ad.objects.create(
-                title=request.POST.get('title', ''),
-                price=request.POST.get('price', ''),
-                text=request.POST.get('text', ''),
-                owner=request.user if request.user.is_authenticated else None
-            )
-            # Store the latest created ad in session
-            request.session['latest_created_ad'] = {
-                'id': new_ad.id,
-                'title': new_ad.title,
-                'price': str(new_ad.price),
-                'text': new_ad.text
-            }
-            return redirect('/accounts/login/')
-        elif form.is_valid():
+    try:
+        from ads.models import Ad
+        ads = Ad.objects.all()
+        latest_ad = request.session.get('latest_created_ad')
+        form = AuthenticationForm(request, data=request.POST or None)
+        
+        if request.method == 'POST':
+            if request.POST.get('form_type') == 'create_ad':
+                # Create the ad
+                new_ad = Ad.objects.create(
+                    title=request.POST.get('title', ''),
+                    price=request.POST.get('price', ''),
+                    text=request.POST.get('text', ''),
+                    owner=request.user if request.user.is_authenticated else None
+                )
+                # Store the latest created ad in session
+                request.session['latest_created_ad'] = {
+                    'id': new_ad.id,
+                    'title': new_ad.title,
+                    'price': str(new_ad.price),
+                    'text': new_ad.text
+                }
+                return redirect('/accounts/login/')
+            elif form.is_valid():
+                auth_login(request, form.get_user())
+                return redirect('/')
+        
+        context = {'form': form, 'ads': ads, 'latest_ad': latest_ad}
+        return render(request, 'registration/login.html', context)
+    except Exception as e:
+        print(f"Login error: {e}")
+        # Fallback to simple login if there's an error
+        form = AuthenticationForm(request, data=request.POST or None)
+        if request.method == 'POST' and form.is_valid():
             auth_login(request, form.get_user())
             return redirect('/')
-    
-    context = {'form': form, 'ads': ads, 'latest_ad': latest_ad}
-    return render(request, 'registration/login.html', context)
+        return render(request, 'registration/login.html', {'form': form})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
