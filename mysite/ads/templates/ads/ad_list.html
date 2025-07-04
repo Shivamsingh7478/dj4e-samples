@@ -25,6 +25,11 @@
         <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
         <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
       {% endif %}
+      <!-- Debug output -->
+      <div style="font-size:small; color:#888;">
+        owner: {{ ad.owner }} (id: {{ ad.owner.id }})<br>
+        user: {{ user }} (id: {{ user.id }})
+      </div>
     </td>
   </tr>
   {% endfor %}
