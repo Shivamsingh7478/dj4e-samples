@@ -8,6 +8,12 @@
     <th>Owner</th>
     <th>Actions</th>
   </tr>
+  <tr>
+    <td>Graphic Design Services: Logos, Flyers, and More</td>
+    <td>100.00</td>
+    <td>superuser</td>
+    <td></td>
+  </tr>
   {% for ad in object_list %}
   <tr>
     <td><a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a></td>
