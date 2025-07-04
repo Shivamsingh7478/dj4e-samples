@@ -28,58 +28,23 @@ from django.contrib.auth import login as auth_login
 from django.http import JsonResponse
 
 def custom_login(request, *args, **kwargs):
-    try:
-        from ads.models import Ad
-        ads = Ad.objects.all()
-        form = AuthenticationForm(request, data=request.POST or None)
-        
-        if request.method == 'POST':
-            if request.POST.get('form_type') == 'create_ad':
-                new_ad = Ad.objects.create(
-                    title=request.POST.get('title', ''),
-                    price=request.POST.get('price', ''),
-                    text=request.POST.get('text', ''),
-                    owner=request.user if request.user.is_authenticated else None
-                )
-                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({
-                        'id': new_ad.id,
-                        'title': new_ad.title,
-                        'price': str(new_ad.price),
-                        'text': new_ad.text
-                    })
-                # fallback for normal POST
-                latest_ad = Ad.objects.order_by('-created_at').first()
-                latest_ad_data = {
-                    'id': latest_ad.id,
-                    'title': latest_ad.title,
-                    'price': str(latest_ad.price),
-                    'text': latest_ad.text
-                }
-                context = {'form': form, 'ads': ads, 'latest_ad': latest_ad_data}
-                return render(request, 'registration/login.html', context)
-            elif form.is_valid():
-                auth_login(request, form.get_user())
-                return redirect('/')
-        
-        latest_ad = Ad.objects.order_by('-created_at').first()
-        latest_ad_data = None
-        if latest_ad:
-            latest_ad_data = {
-                'id': latest_ad.id,
-                'title': latest_ad.title,
-                'price': str(latest_ad.price),
-                'text': latest_ad.text
-            }
-        context = {'form': form, 'ads': ads, 'latest_ad': latest_ad_data}
-        return render(request, 'registration/login.html', context)
-    except Exception as e:
-        print(f"Login error: {e}")
-        form = AuthenticationForm(request, data=request.POST or None)
-        if request.method == 'POST' and form.is_valid():
+    from ads.models import Ad
+    ads = Ad.objects.all()
+    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == 'POST':
+        if request.POST.get('form_type') == 'create_ad':
+            Ad.objects.create(
+                title=request.POST.get('title', ''),
+                price=request.POST.get('price', ''),
+                text=request.POST.get('text', ''),
+                owner=request.user if request.user.is_authenticated else None
+            )
+            return redirect('/accounts/login/')
+        elif form.is_valid():
             auth_login(request, form.get_user())
             return redirect('/')
-        return render(request, 'registration/login.html', {'form': form})
+    context = {'form': form, 'ads': ads}
+    return render(request, 'registration/login.html', context)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
