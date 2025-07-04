@@ -5,6 +5,9 @@ class AdListView(OwnerListView):
     model = Ad
     template_name = "ads/ad_list.html"
 
+    def get_queryset(self):
+        return Ad.objects.all()
+
 class AdDetailView(OwnerDetailView):
     model = Ad
     template_name = "ads/ad_detail.html"
