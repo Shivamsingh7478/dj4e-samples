@@ -1,91 +1,25 @@
-{% extends "base_bootstrap.html" %}
+{% extends "base_menu.html" %}
 {% block content %}
-<h1>Ads</h1>
-
-<!-- Search Form -->
-<form method="get" action="{% url 'ads:all' %}" style="margin-bottom: 20px;">
-    <div class="input-group" style="max-width: 400px;">
-        <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Search ads..." aria-label="Search ads">
-        <button class="btn btn-outline-secondary" type="submit">Search</button>
-    </div>
-</form>
-
-<p>
-{% if ad_list %}
-<ul>
-  {% for ad in ad_list %}
-    <li>
-        <a href="{% url 'ads:ad_detail'  ad.id %}">{{ ad.title }}</a>
-        {% if ad.owner_id == user.id %}
-        (<a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
-        <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>)
-        {% endif %}
-        {% if user.is_authenticated %}
-        <!-- Two hrefs with two stacked icons each - one showing and one hidden -->
-        <a href="#" onclick=
-            "favPost('{% url 'ads:ad_unfavorite' ad.id %}', {{ ad.id }} );return false;"
-            {% if ad.id not in favorites %} style="display: none;" {% endif %}
-            id="favorite_star_{{ad.id}}">
-        <span class="fa-stack" style="vertical-align: middle;">
-        <i class="fa fa-star fa-stack-1x" style="color: orange;"></i>
-        <i class="fa fa-star-o fa-stack-1x"></i>
-        </span>
-        </a>
-        <!-- the second href -->
-        <a href="#" onclick=
-             "favPost('{% url 'ads:ad_favorite' ad.id %}', {{ ad.id }} );return false;"
-            {% if ad.id in favorites %} style="display: none;" {% endif %}
-            id="unfavorite_star_{{ad.id}}">
-        <span class="fa-stack" style="vertical-align: middle;">
-        <i class="fa fa-star fa-stack-1x" style="display: none; color: orange;"></i>
-        <i class="fa fa-star-o fa-stack-1x"></i>
-        </span>
-        </a>
-        {% endif %}
-    </li>
+<h1>All Ads</h1>
+<table class="table">
+  <tr>
+    <th>Title</th>
+    <th>Price</th>
+    <th>Owner</th>
+    <th>Actions</th>
+  </tr>
+  {% for ad in object_list %}
+  <tr>
+    <td><a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a></td>
+    <td>{{ ad.price }}</td>
+    <td>{{ ad.owner }}</td>
+    <td>
+      {% if ad.owner == user %}
+        <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
+        <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
+      {% endif %}
+    </td>
+  </tr>
   {% endfor %}
-</ul>
-{% else %}
-  <p>There are no ads in the database.</p>
-{% endif %}
-</p>
-<p>
-<a href="{% url 'ads:ad_create' %}">Create Ad</a> |
-{% if user.is_authenticated %}
-<a href="{% url 'logout' %}?next={% url 'ads:all' %}">Logout</a>
-{% else %}
-<a href="{% url 'login' %}?next={% url 'ads:all' %}">Login</a>
-{% endif %}
-</p>
-<script>
-function toggleInlineDisplay(star_id) {
-    var elem = document.getElementById(star_id);
-    if(window.getComputedStyle(elem).display == "inline") {
-        elem.style.display = 'none';
-        elem.dataset.previousDisplay = 'inline';
-    } else if(window.getComputedStyle(elem).display == "block") {
-        elem.style.display = 'none';
-        elem.dataset.previousDisplay = 'block';
-    } else {
-        console.log('prev', elem.dataset.previousDisplay);
-        if ( typeof elem.dataset.previousDisplay == 'string' ) {
-            elem.style.display = elem.dataset.previousDisplay
-        } else {
-            elem.style.display = 'inline';
-        }
-    }
-}
-
-function favPost(url, ad_id) {
-    console.log('POSTing to', url);
-    fetch(url, { method: 'POST', body: '{}' } )
-    .then((response) => {
-        console.log(url, 'finished');
-        toggleInlineDisplay("unfavorite_star_"+ad_id);
-        toggleInlineDisplay("favorite_star_"+ad_id);
-    }).catch((error) => {
-        alert('Url failed with '+error+' '+url);
-    });
-}
-</script>
+</table>
 {% endblock %} 

@@ -1,27 +1,12 @@
-{% extends 'base_bootstrap.html' %}
-
+{% extends "base_menu.html" %}
 {% block content %}
-<h2>{{ ad.title }} - Price: ₹{{ ad.price }}</h2>
-<p>{{ ad.text }}</p>
-
-{% if ad.picture %}
-  <img src="{% url 'ads:ad_picture' ad.id %}" width="300"/>
+<h1>{{ ad.title }}</h1>
+<p><strong>Price:</strong> {{ ad.price }}</p>
+<p><strong>Description:</strong> {{ ad.text }}</p>
+<p><strong>Owner:</strong> {{ ad.owner }}</p>
+{% if ad.owner == user %}
+  <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
+  <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
 {% endif %}
-
-<h3>Comments:</h3>
-<ul>
-{% for comment in comments %}
-  <li>{{ comment.text }} - {{ comment.owner }}
-    {% if comment.owner == user %}
-      <a href="{% url 'ads:ad_comment_delete' comment.id %}">🗑️</a>
-    {% endif %}
-  </li>
-{% endfor %}
-</ul>
-
-<form method="post" action="{% url 'ads:ad_comment_create' ad.id %}">
-  {% csrf_token %}
-  {{ comment_form.as_p }}
-  <button type="submit">Submit</button>
-</form>
-{% endblock %}
+<a href="{% url 'ads:all' %}">Back to all ads</a>
+{% endblock %} 
