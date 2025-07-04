@@ -27,7 +27,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 
 def custom_login(request, *args, **kwargs):
-    last_ad = None
+    last_ad = request.session.get('last_ad')
     form = AuthenticationForm(request, data=request.POST or None)
     if request.method == 'POST' and request.POST.get('form_type') == 'create_ad':
         last_ad = {
@@ -35,7 +35,7 @@ def custom_login(request, *args, **kwargs):
             'price': request.POST.get('price', ''),
             'text': request.POST.get('text', ''),
         }
-        # Do NOT save to the database, just show it
+        request.session['last_ad'] = last_ad
     elif request.method == 'POST' and request.POST.get('form_type') == 'login':
         if form.is_valid():
             auth_login(request, form.get_user())
