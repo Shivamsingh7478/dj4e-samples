@@ -22,12 +22,27 @@ from django.contrib.auth import views as auth_views
 from django.views.static import serve
 from django.views.generic import TemplateView
 from ads.models import Ad
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login as auth_login
 
 def custom_login(request, *args, **kwargs):
-    from django.contrib.auth.forms import AuthenticationForm
     ads = Ad.objects.all()
     form = AuthenticationForm(request, data=request.POST or None)
+    # Handle ad creation from the login page
+    if request.method == 'POST' and 'title' in request.POST and 'price' in request.POST and 'text' in request.POST:
+        Ad.objects.create(
+            title=request.POST['title'],
+            price=request.POST['price'],
+            text=request.POST['text'],
+            owner=request.user if request.user.is_authenticated else None
+        )
+        return redirect('/accounts/login/')
+    # Handle login
+    if request.method == 'POST' and 'username' in request.POST and 'password' in request.POST:
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect('/')
     context = {'form': form, 'ads': ads}
     return render(request, 'registration/login.html', context)
 
