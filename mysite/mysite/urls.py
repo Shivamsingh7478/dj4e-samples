@@ -29,10 +29,22 @@ from django.contrib.auth import login as auth_login
 def custom_login(request, *args, **kwargs):
     ads = Ad.objects.all()
     form = AuthenticationForm(request, data=request.POST or None)
+    
     if request.method == 'POST':
-        if form.is_valid():
+        if request.POST.get('form_type') == 'create_ad':
+            # Create the ad
+            Ad.objects.create(
+                title=request.POST.get('title', ''),
+                price=request.POST.get('price', ''),
+                text=request.POST.get('text', ''),
+                owner=request.user if request.user.is_authenticated else None
+            )
+            # Redirect back to login page to show the new ad
+            return redirect('/accounts/login/')
+        elif form.is_valid():
             auth_login(request, form.get_user())
             return redirect('/')
+    
     context = {'form': form, 'ads': ads}
     return render(request, 'registration/login.html', context)
 
