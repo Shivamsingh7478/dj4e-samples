@@ -30,7 +30,6 @@ def custom_login(request, *args, **kwargs):
     try:
         from ads.models import Ad
         ads = Ad.objects.all()
-        latest_ad = request.session.get('latest_created_ad')
         form = AuthenticationForm(request, data=request.POST or None)
         
         if request.method == 'POST':
@@ -42,19 +41,32 @@ def custom_login(request, *args, **kwargs):
                     text=request.POST.get('text', ''),
                     owner=request.user if request.user.is_authenticated else None
                 )
-                # Store the latest created ad in session
-                request.session['latest_created_ad'] = {
-                    'id': new_ad.id,
-                    'title': new_ad.title,
-                    'price': str(new_ad.price),
-                    'text': new_ad.text
+                # Get the most recently created ad (should be the one we just created)
+                latest_ad = Ad.objects.order_by('-created_at').first()
+                latest_ad_data = {
+                    'id': latest_ad.id,
+                    'title': latest_ad.title,
+                    'price': str(latest_ad.price),
+                    'text': latest_ad.text
                 }
-                return redirect('/accounts/login/')
+                context = {'form': form, 'ads': ads, 'latest_ad': latest_ad_data}
+                return render(request, 'registration/login.html', context)
             elif form.is_valid():
                 auth_login(request, form.get_user())
                 return redirect('/')
         
-        context = {'form': form, 'ads': ads, 'latest_ad': latest_ad}
+        # Get the most recently created ad for display
+        latest_ad = Ad.objects.order_by('-created_at').first()
+        latest_ad_data = None
+        if latest_ad:
+            latest_ad_data = {
+                'id': latest_ad.id,
+                'title': latest_ad.title,
+                'price': str(latest_ad.price),
+                'text': latest_ad.text
+            }
+        
+        context = {'form': form, 'ads': ads, 'latest_ad': latest_ad_data}
         return render(request, 'registration/login.html', context)
     except Exception as e:
         print(f"Login error: {e}")
