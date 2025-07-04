@@ -1,16 +1,25 @@
 {% extends "base_menu.html" %}
 {% block content %}
-<h1>Ads</h1>
-<a href="{% url 'ads:ad_create' %}">Create Ad</a>
-<ul>
+<h1>All Ads</h1>
+<table class="table">
+  <tr>
+    <th>Title</th>
+    <th>Price</th>
+    <th>Owner</th>
+    <th>Actions</th>
+  </tr>
   {% for ad in object_list %}
-    <li>
-      <a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a> - ${{ ad.price }}
+  <tr>
+    <td><a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a></td>
+    <td>{{ ad.price }}</td>
+    <td>{{ ad.owner }}</td>
+    <td>
       {% if ad.owner == user %}
-        <a href="{% url 'ads:ad_update' ad.id %}">Edit</a>
+        <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
         <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
       {% endif %}
-    </li>
+    </td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
 {% endblock %} 
