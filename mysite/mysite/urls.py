@@ -27,28 +27,26 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 
 def custom_login(request, *args, **kwargs):
-    ads = Ad.objects.all()
+    last_ad = None
     form = AuthenticationForm(request, data=request.POST or None)
-    if request.method == 'POST':
-        if request.POST.get('form_type') == 'create_ad':
-            Ad.objects.create(
-                title=request.POST['title'],
-                price=request.POST['price'],
-                text=request.POST['text'],
-                owner=request.user if request.user.is_authenticated else None
-            )
-            return redirect('/accounts/login/')
-        elif request.POST.get('form_type') == 'login':
-            if form.is_valid():
-                auth_login(request, form.get_user())
-                return redirect('/')
-    context = {'form': form, 'ads': ads}
+    if request.method == 'POST' and request.POST.get('form_type') == 'create_ad':
+        last_ad = {
+            'title': request.POST.get('title', ''),
+            'price': request.POST.get('price', ''),
+            'text': request.POST.get('text', ''),
+        }
+        # Do NOT save to the database, just show it
+    elif request.method == 'POST' and request.POST.get('form_type') == 'login':
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect('/')
+    context = {'form': form, 'last_ad': last_ad}
     return render(request, 'registration/login.html', context)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
-    path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('accounts/login/', custom_login, name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
     path('ads/', include('ads.urls')),

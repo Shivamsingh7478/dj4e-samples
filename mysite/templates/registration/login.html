@@ -6,14 +6,15 @@
   Graphic Design Services: Logos, Flyers, and More
 </a>
 <span style="margin-left: 10px; font-weight: bold; color: #333;">price: 100.00</span>
-<form method="post">
+<form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Login</button>
+  <input type="hidden" name="form_type" value="login">
 </form>
 <hr>
 <h2>Create Ad</h2>
-<form method="post" action="/ads/ad/create/">
+<form method="post" action="">
   {% csrf_token %}
   <label for="id_title">Title:</label>
   <input type="text" name="title" id="id_title" value="Graphic Design Services: Logos, Flyers, and More" required><br>
@@ -22,9 +23,11 @@
   <label for="id_text">Text:</label>
   <textarea name="text" id="id_text" required>Professional graphic design services for all your needs.</textarea><br>
   <button type="submit">Submit</button>
+  <input type="hidden" name="form_type" value="create_ad">
 </form>
+
+{% if last_ad %}
 <hr>
-<!-- Static table for autograder to find the last submitted ad -->
 <table class="table">
   <tr>
     <th>Title</th>
@@ -32,9 +35,10 @@
     <th>Text</th>
   </tr>
   <tr>
-    <td>HHGTTG_41 07:02:00</td>
-    <td>0.41</td>
-    <td>Low cost Vogon poetry.</td>
+    <td>{{ last_ad.title }}</td>
+    <td>{{ last_ad.price }}</td>
+    <td>{{ last_ad.text }}</td>
   </tr>
 </table>
+{% endif %}
 {% endblock %} 
