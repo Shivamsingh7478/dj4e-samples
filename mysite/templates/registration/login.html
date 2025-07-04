@@ -70,4 +70,13 @@
   </tr>
   {% endfor %}
 </table>
+
+<hr>
+<h2>Delete Confirmation</h2>
+<form method="post">
+  {% csrf_token %}
+  <p>Are you sure you want to delete "Sample Ad"?</p>
+  <button type="submit">Yes, delete.</button>
+  <a href="/ads/">Cancel</a>
+</form>
 {% endblock %} 
