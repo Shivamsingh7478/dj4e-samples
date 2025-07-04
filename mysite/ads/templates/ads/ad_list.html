@@ -1,6 +1,7 @@
 {% extends "base_menu.html" %}
 {% block content %}
 <h1>All Ads</h1>
+<a href="{% url 'ads:ad_create' %}">Create Ad</a>
 <a href="{% url 'ads:ad_create' %}" class="btn btn-primary" style="margin-bottom: 15px;">Create Ad</a>
 <table class="table">
   <tr>
