@@ -28,12 +28,31 @@ from django.contrib.auth import login as auth_login
 
 def custom_login(request, *args, **kwargs):
     ads = Ad.objects.all()
+    latest_ad = request.session.get('latest_created_ad')
     form = AuthenticationForm(request, data=request.POST or None)
+    
     if request.method == 'POST':
-        if form.is_valid():
+        if request.POST.get('form_type') == 'create_ad':
+            # Create the ad
+            new_ad = Ad.objects.create(
+                title=request.POST.get('title', ''),
+                price=request.POST.get('price', ''),
+                text=request.POST.get('text', ''),
+                owner=request.user if request.user.is_authenticated else None
+            )
+            # Store the latest created ad in session
+            request.session['latest_created_ad'] = {
+                'id': new_ad.id,
+                'title': new_ad.title,
+                'price': str(new_ad.price),
+                'text': new_ad.text
+            }
+            return redirect('/accounts/login/')
+        elif form.is_valid():
             auth_login(request, form.get_user())
             return redirect('/')
-    context = {'form': form, 'ads': ads}
+    
+    context = {'form': form, 'ads': ads, 'latest_ad': latest_ad}
     return render(request, 'registration/login.html', context)
 
 urlpatterns = [

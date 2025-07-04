@@ -66,6 +66,18 @@
     </td>
   </tr>
   {% endfor %}
+  
+  {% if latest_ad %}
+  <!-- Latest Created Ad -->
+  <tr style="background-color: #e8f5e8;">
+    <td><a href="/ads/ad/{{ latest_ad.id }}/">{{ latest_ad.title }}</a></td>
+    <td>{{ latest_ad.price }}</td>
+    <td>
+      <a href="/ads/ad/{{ latest_ad.id }}/update/">Edit</a> | 
+      <a href="/ads/ad/{{ latest_ad.id }}/delete/">Delete</a>
+    </td>
+  </tr>
+  {% endif %}
 </table>
 
 <hr>
