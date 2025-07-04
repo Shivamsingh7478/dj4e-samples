@@ -27,20 +27,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
 
 def custom_login(request, *args, **kwargs):
-    last_ad = request.session.get('last_ad')
+    ads = Ad.objects.all()
     form = AuthenticationForm(request, data=request.POST or None)
-    if request.method == 'POST' and request.POST.get('form_type') == 'create_ad':
-        last_ad = {
-            'title': request.POST.get('title', ''),
-            'price': request.POST.get('price', ''),
-            'text': request.POST.get('text', ''),
-        }
-        request.session['last_ad'] = last_ad
-    elif request.method == 'POST' and request.POST.get('form_type') == 'login':
+    if request.method == 'POST':
         if form.is_valid():
             auth_login(request, form.get_user())
             return redirect('/')
-    context = {'form': form, 'last_ad': last_ad}
+    context = {'form': form, 'ads': ads}
     return render(request, 'registration/login.html', context)
 
 urlpatterns = [
