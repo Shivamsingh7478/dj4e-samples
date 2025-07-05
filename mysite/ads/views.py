@@ -23,6 +23,9 @@ class AdListView(OwnerListView):
 class AdDetailView(OwnerDetailView):
     model = Ad
     template_name = "ads/ad_detail.html"
+    
+    def get_queryset(self):
+        return Ad.objects.all()
 
 class AdCreateView(CreateView):
     model = Ad
