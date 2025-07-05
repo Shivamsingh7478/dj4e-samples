@@ -20,21 +20,85 @@ class AdListView(OwnerListView):
     def get_queryset(self):
         return Ad.objects.all()
 
-class AdDetailView(DetailView):
+class AdDetailView(OwnerDetailView):
     model = Ad
     template_name = "ads/ad_detail.html"
     
     def get_queryset(self):
-        print(f"AdDetailView get_queryset called")
+        return Ad.objects.all()
+
+def debug_detail(request, pk):
+    """Debug view to test URL routing and database access"""
+    try:
+        # Test database access
         ads = Ad.objects.all()
-        print(f"Found {ads.count()} ads: {[f'ID:{ad.id} Title:{ad.title}' for ad in ads]}")
-        return ads
-    
-    def get_object(self, queryset=None):
-        print(f"AdDetailView get_object called with pk={self.kwargs.get('pk')}")
-        obj = super().get_object(queryset)
-        print(f"Found object: {obj}")
-        return obj
+        ad_count = ads.count()
+        
+        # Try to get specific ad
+        try:
+            ad = Ad.objects.get(id=pk)
+            ad_found = True
+            ad_title = ad.title
+        except Ad.DoesNotExist:
+            ad_found = False
+            ad_title = "Not found"
+        
+        html = f"""
+        <html>
+        <head><title>Debug - Ad {pk}</title></head>
+        <body>
+            <h1>Debug Information</h1>
+            <p><strong>Requested PK:</strong> {pk}</p>
+            <p><strong>Total ads in database:</strong> {ad_count}</p>
+            <p><strong>Ad found:</strong> {ad_found}</p>
+            <p><strong>Ad title:</strong> {ad_title}</p>
+            
+            <h2>All ads in database:</h2>
+            <ul>
+        """
+        
+        for ad in ads:
+            html += f"<li>ID: {ad.id}, Title: '{ad.title}', Owner: {ad.owner.username if ad.owner else 'None'}</li>"
+        
+        html += """
+            </ul>
+            
+            <h2>Test URLs:</h2>
+            <ul>
+                <li><a href="/ads/test/1/">Test Detail 1</a></li>
+                <li><a href="/ads/simple/1/">Simple Detail 1</a></li>
+                <li><a href="/ads/ad/1/">Regular Detail 1</a></li>
+            </ul>
+        </body>
+        </html>
+        """
+        
+        return HttpResponse(html)
+        
+    except Exception as e:
+        return HttpResponse(f"Error in debug view: {e}", status=500)
+
+def simple_detail(request, pk):
+    """Simple detail view that should work without complex dependencies"""
+    try:
+        ad = Ad.objects.get(id=pk)
+        html = f"""
+        <html>
+        <head><title>{ad.title}</title></head>
+        <body>
+            <h1>{ad.title}</h1>
+            <p><strong>Price:</strong> ${ad.price}</p>
+            <p><strong>Description:</strong> {ad.text}</p>
+            <p><strong>Owner:</strong> {ad.owner.username if ad.owner else 'None'}</p>
+            <p><a href="/ads/">Back to Ads List</a></p>
+        </body>
+        </html>
+        """
+        return HttpResponse(html)
+    except Ad.DoesNotExist:
+        return HttpResponse(f"Ad ID {pk} not found", status=404)
+    except Exception as e:
+        return HttpResponse(f"Error: {e}", status=500)
 
 class AdCreateView(CreateView):
     model = Ad
