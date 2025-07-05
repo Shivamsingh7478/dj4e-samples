@@ -10,6 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
+from django.middleware.csrf import get_token
 
 from .forms import CreateForm
 
@@ -235,6 +236,9 @@ def simple_delete(request, pk):
             ad.delete()
             return redirect('ads:all')
         
+        # Get CSRF token
+        csrf_token = get_token(request)
+        
         html = f"""
         <!DOCTYPE html>
         <html>
@@ -255,7 +259,9 @@ def simple_delete(request, pk):
                 }}
                 .btn-danger {{ background-color: #dc3545; color: white; }}
                 .btn-secondary {{ background-color: #6c757d; color: white; }}
+                .btn-primary {{ background-color: #007bff; color: white; }}
                 .btn:hover {{ opacity: 0.8; }}
+                .links {{ margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; }}
             </style>
         </head>
         <body>
@@ -263,9 +269,14 @@ def simple_delete(request, pk):
                 <h1>Delete Ad</h1>
                 <p>Are you sure you want to delete "{ad.title}"?</p>
                 <form method="post">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{csrf_token}">
                     <button type="submit" class="btn btn-danger">Yes, delete.</button>
                     <a href="/ads/" class="btn btn-secondary">Cancel</a>
                 </form>
+                <div class="links">
+                    <a href="/ads/ad/create/" class="btn btn-primary">Create Ad</a> |
+                    <a href="/ads/" class="btn btn-secondary">View all</a>
+                </div>
             </div>
         </body>
         </html>
