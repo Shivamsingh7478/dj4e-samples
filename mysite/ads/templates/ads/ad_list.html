@@ -1,58 +1,60 @@
-{% extends "base_menu.html" %}
+{% extends "base_bootstrap.html" %}
+
 {% block content %}
-<h1>All Ads</h1>
-<a href="{% url 'ads:ad_create' %}">Create Ad</a>
-<a href="{% url 'ads:ad_create' %}" class="btn btn-primary" style="margin-bottom: 15px;">Create Ad</a>
-<table class="table">
-  <tr>
-    <th>Title</th>
-    <th>Price</th>
-    <th>Owner</th>
-    <th>Actions</th>
-  </tr>
-  <tr>
-    <td><a href="/ads/ad/1/">Graphic Design Services: Logos, Flyers, and More</a></td>
-    <td>100.00</td>
-    <td>superuser</td>
-    <td><a href="/ads/ad/1/update/">Edit</a> | <a href="/ads/ad/1/delete/">Delete</a></td>
-  </tr>
-  {% for ad in object_list %}
-  <tr>
-    <td><a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a></td>
-    <td>{{ ad.price }}</td>
-    <td>{{ ad.owner }}</td>
-    <td>
-      <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> |
-      <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
-    </td>
-  </tr>
-  {% endfor %}
-  
-  <!-- Static HHGTTG ads for autograder -->
-  <tr style="background-color: #e8f5e8;">
-    <td><a href="/ads/ad/999/">HHGTTG_41 10:33:24</a></td>
-    <td>0.41</td>
-    <td><a href="/ads/ad/999/update/">Edit</a> | <a href="/ads/ad/999/delete/">Delete</a></td>
-  </tr>
-  <tr style="background-color: #e8f5e8;">
-    <td><a href="/ads/ad/998/">HHGTTG_41 10:30:35</a></td>
-    <td>0.41</td>
-    <td><a href="/ads/ad/998/update/">Edit</a> | <a href="/ads/ad/998/delete/">Delete</a></td>
-  </tr>
-  <tr style="background-color: #e8f5e8;">
-    <td><a href="/ads/ad/997/">HHGTTG_41 10:04:45</a></td>
-    <td>0.41</td>
-    <td><a href="/ads/ad/997/update/">Edit</a> | <a href="/ads/ad/997/delete/">Delete</a></td>
-  </tr>
-  <tr style="background-color: #e8f5e8;">
-    <td><a href="/ads/ad/996/">HHGTTG_41 10:05:30</a></td>
-    <td>0.41</td>
-    <td><a href="/ads/ad/996/update/">Edit</a> | <a href="/ads/ad/996/delete/">Delete</a></td>
-  </tr>
-  <tr style="background-color: #e8f5e8;">
-    <td><a href="/ads/ad/995/">HHGTTG_41 10:06:15</a></td>
-    <td>0.41</td>
-    <td><a href="/ads/ad/995/update/">Edit</a> | <a href="/ads/ad/995/delete/">Delete</a></td>
-  </tr>
-</table>
+  <h1>Ads List</h1>
+  {% if ad_list %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="ads-table-body">
+      {% for ad in ad_list %}
+      <tr>
+        <td><a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a></td>
+        <td>{{ ad.price }}</td>
+        <td>
+          {% if user.is_authenticated and user.id == ad.owner.id %}
+            <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> | 
+            <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>There are no ads in the database</p>
+  {% endif %}
+  <p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'ads:ad_create' %}">Create Ad</a> |
+    {% endif %}
+    <a href="{% url 'ads:all' %}">View all</a>
+  </p>
+
+  <script>
+    // Function to refresh the ads table
+    function refreshAdsTable() {
+      fetch('/ads/ad/list/ajax/')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('ads-table-body').innerHTML = html;
+        })
+        .catch(error => console.error('Error refreshing ads:', error));
+    }
+
+    // Refresh table every 2 seconds
+    setInterval(refreshAdsTable, 2000);
+
+    // Also refresh when page becomes visible (user switches back to tab)
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        refreshAdsTable();
+      }
+    });
+  </script>
 {% endblock %} 
