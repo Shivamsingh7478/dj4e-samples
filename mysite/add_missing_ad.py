@@ -52,4 +52,4 @@ def add_missing_ad():
     print(f"\nAutograder should now find the required ad!")
 
 if __name__ == '__main__':
-    add_missing_ad() 
+    add_missing_ad()
