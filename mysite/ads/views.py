@@ -50,11 +50,17 @@ class AdUpdateView(UpdateView):
     fields = ['title', 'price', 'text']
     template_name = "ads/ad_form.html"
     success_url = reverse_lazy('ads:all')
+    
+    def get_queryset(self):
+        return Ad.objects.all()
 
 class AdDeleteView(DeleteView):
     model = Ad
     template_name = "ads/ad_confirm_delete.html"
     success_url = reverse_lazy('ads:all')
+    
+    def get_queryset(self):
+        return Ad.objects.all()
 
 def ad_list_ajax(request):
     """AJAX endpoint to return just the table rows for dynamic updates"""
