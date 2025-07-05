@@ -5,6 +5,7 @@ app_name = 'ads'
 urlpatterns = [
     path('', views.AdListView.as_view(), name='all'),
     path('simple/', views.simple_ads_list, name='simple_list'),
+    path('debug-ownership/', views.debug_ownership, name='debug_ownership'),
     path('ad/<int:pk>/', views.AdDetailView.as_view(), name='ad_detail'),
     path('ad/<int:pk>', views.AdDetailView.as_view(), name='ad_detail_no_slash'),
     path('test/<int:pk>/', views.test_detail, name='test_detail'),

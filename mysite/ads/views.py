@@ -70,18 +70,21 @@ class AdListView(OwnerListView):
             return HttpResponse(html)
 
 def simple_ads_list(request):
-    """Simple ads list view that shows all ads"""
+    """Simple ads list view that shows all ads with ownership info"""
     ads = Ad.objects.all()
     html = f"""
     <html>
     <head><title>Ads List</title></head>
     <body>
         <h1>Ads List</h1>
+        <p><strong>Current user:</strong> {request.user.username if request.user.is_authenticated else 'Not authenticated'}</p>
+        <p><strong>User ID:</strong> {request.user.id if request.user.is_authenticated else 'N/A'}</p>
         <table border="1" style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Price</th>
+                    <th>Owner</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -89,14 +92,19 @@ def simple_ads_list(request):
     """
     
     for ad in ads:
+        is_owner = request.user == ad.owner if request.user.is_authenticated else False
+        actions_html = ""
+        if is_owner:
+            actions_html = f'<a href="/ads/ad/{ad.id}/update/">Edit</a> | <a href="/ads/ad/{ad.id}/delete/">Delete</a>'
+        else:
+            actions_html = '<span style="color: #999;">No actions available</span>'
+        
         html += f"""
                 <tr>
                     <td><a href="/ads/ad/{ad.id}/">{ad.title}</a></td>
                     <td>${ad.price}</td>
-                    <td>
-                        <a href="/ads/ad/{ad.id}/update/">Edit</a> | 
-                        <a href="/ads/ad/{ad.id}/delete/">Delete</a>
-                    </td>
+                    <td>{ad.owner.username if ad.owner else 'None'} (ID: {ad.owner.id if ad.owner else 'None'})</td>
+                    <td>{actions_html}</td>
                 </tr>
         """
     
@@ -105,7 +113,8 @@ def simple_ads_list(request):
         </table>
         <p>
             <a href="/ads/ad/create/">Create Ad</a> |
-            <a href="/ads/">View all</a>
+            <a href="/ads/">View all</a> |
+            <a href="/ads/debug-ownership/">Debug Ownership</a>
         </p>
     </body>
     </html>
@@ -371,4 +380,57 @@ def ad_list_ajax(request):
     """AJAX endpoint to return just the table rows for dynamic updates"""
     ads = Ad.objects.all()
     html = render_to_string('ads/ad_list_rows.html', {'ad_list': ads, 'user': request.user})
+    return HttpResponse(html)
+
+def debug_ownership(request):
+    """Debug view to check user authentication and ad ownership"""
+    ads = Ad.objects.all()
+    html = f"""
+    <html>
+    <head><title>Debug Ownership</title></head>
+    <body>
+        <h1>Debug Ownership</h1>
+        <p><strong>Current user:</strong> {request.user.username if request.user.is_authenticated else 'Not authenticated'}</p>
+        <p><strong>User ID:</strong> {request.user.id if request.user.is_authenticated else 'N/A'}</p>
+        <p><strong>Is authenticated:</strong> {request.user.is_authenticated}</p>
+        
+        <h2>All ads and ownership:</h2>
+        <table border="1" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Ad ID</th>
+                    <th>Title</th>
+                    <th>Owner</th>
+                    <th>Owner ID</th>
+                    <th>Is Owner?</th>
+                </tr>
+            </thead>
+            <tbody>
+    """
+    
+    for ad in ads:
+        is_owner = request.user == ad.owner if request.user.is_authenticated else False
+        html += f"""
+                <tr>
+                    <td>{ad.id}</td>
+                    <td>{ad.title}</td>
+                    <td>{ad.owner.username if ad.owner else 'None'}</td>
+                    <td>{ad.owner.id if ad.owner else 'None'}</td>
+                    <td>{is_owner}</td>
+                </tr>
+        """
+    
+    html += """
+            </tbody>
+        </table>
+        
+        <h2>Test URLs:</h2>
+        <ul>
+            <li><a href="/ads/">Ads List</a></li>
+            <li><a href="/ads/simple/">Simple Ads List</a></li>
+        </ul>
+    </body>
+    </html>
+    """
+    
     return HttpResponse(html) 
