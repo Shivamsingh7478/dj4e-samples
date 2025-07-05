@@ -14,14 +14,14 @@ class AdDetailView(OwnerDetailView):
     model = Ad
     template_name = "ads/ad_detail.html"
 
-class AdCreateView(LoginRequiredMixin, CreateView):
+class AdCreateView(CreateView):
     model = Ad
     fields = ['title', 'price', 'text']
     template_name = "ads/ad_form.html"
     success_url = '/ads/'
     
     def form_valid(self, form):
-        form.instance.owner = self.request.user
+        form.instance.owner = self.request.user if self.request.user.is_authenticated else None
         return super().form_valid(form)
 
 class AdUpdateView(LoginRequiredMixin, UpdateView):
