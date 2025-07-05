@@ -25,7 +25,16 @@ class AdDetailView(DetailView):
     template_name = "ads/ad_detail.html"
     
     def get_queryset(self):
-        return Ad.objects.all()
+        print(f"AdDetailView get_queryset called")
+        ads = Ad.objects.all()
+        print(f"Found {ads.count()} ads: {[f'ID:{ad.id} Title:{ad.title}' for ad in ads]}")
+        return ads
+    
+    def get_object(self, queryset=None):
+        print(f"AdDetailView get_object called with pk={self.kwargs.get('pk')}")
+        obj = super().get_object(queryset)
+        print(f"Found object: {obj}")
+        return obj
 
 class AdCreateView(CreateView):
     model = Ad
@@ -61,6 +70,16 @@ class AdDeleteView(DeleteView):
     
     def get_queryset(self):
         return Ad.objects.all()
+
+def test_detail(request, pk):
+    """Simple test view to debug the detail page issue"""
+    try:
+        ad = Ad.objects.get(id=pk)
+        return HttpResponse(f"Test: Found ad ID {pk} - {ad.title}")
+    except Ad.DoesNotExist:
+        return HttpResponse(f"Test: Ad ID {pk} not found")
+    except Exception as e:
+        return HttpResponse(f"Test: Error - {e}")
 
 def ad_list_ajax(request):
     """AJAX endpoint to return just the table rows for dynamic updates"""
