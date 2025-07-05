@@ -24,13 +24,40 @@ from django.views.generic import TemplateView
 from ads.models import Ad
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login as auth_login
-from django.http import JsonResponse
+from django.contrib.auth import login as auth_login, logout
+from django.http import JsonResponse, HttpResponse
+
+def simple_logout(request):
+    """Simple logout view that returns plain HTML"""
+    logout(request)
+    return HttpResponse("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Logged Out</title>
+        <meta charset="utf-8">
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+            .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+            .btn { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+            .btn:hover { background-color: #0056b3; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Logged Out</h1>
+            <p>You have been successfully logged out.</p>
+            <a href="/" class="btn">Go to Home</a>
+        </div>
+    </body>
+    </html>
+    """)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('accounts/logout/', simple_logout, name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
     path('ads/', include('ads.urls')),
