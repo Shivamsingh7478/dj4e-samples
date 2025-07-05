@@ -48,7 +48,7 @@ class AdUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "ads/ad_form.html"
     success_url = reverse_lazy('ads:all')
 
-class AdDeleteView(LoginRequiredMixin, DeleteView):
+class AdDeleteView(DeleteView):
     model = Ad
     template_name = "ads/ad_confirm_delete.html"
     success_url = reverse_lazy('ads:all')
