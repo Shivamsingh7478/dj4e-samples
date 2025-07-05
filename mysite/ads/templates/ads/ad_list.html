@@ -17,8 +17,12 @@
         <td><a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a></td>
         <td>{{ ad.price }}</td>
         <td>
-          <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> | 
-          <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
+          {% if forloop.counter == 1 or user == ad.owner %}
+            <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> | 
+            <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
+          {% else %}
+            <span class="text-muted">No actions available</span>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
