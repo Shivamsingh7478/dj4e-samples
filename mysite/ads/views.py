@@ -39,12 +39,12 @@ class AdUpdateView(LoginRequiredMixin, UpdateView):
     model = Ad
     fields = ['title', 'price', 'text']
     template_name = "ads/ad_form.html"
-    success_url = '/ads/'
+    success_url = reverse_lazy('ads:all')
 
 class AdDeleteView(LoginRequiredMixin, DeleteView):
     model = Ad
     template_name = "ads/ad_confirm_delete.html"
-    success_url = '/ads/'
+    success_url = reverse_lazy('ads:all')
 
 def ad_list_ajax(request):
     """AJAX endpoint to return just the table rows for dynamic updates"""
