@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.contrib.auth.models import User
 
 from .forms import CreateForm
 
@@ -32,6 +33,13 @@ class AdCreateView(CreateView):
     def form_valid(self, form):
         if self.request.user.is_authenticated:
             form.instance.owner = self.request.user
+        else:
+            # Create a default user for anonymous ads
+            default_user, created = User.objects.get_or_create(
+                username='anonymous',
+                defaults={'email': 'anonymous@example.com'}
+            )
+            form.instance.owner = default_user
         return super().form_valid(form)
 
 class AdUpdateView(LoginRequiredMixin, UpdateView):
