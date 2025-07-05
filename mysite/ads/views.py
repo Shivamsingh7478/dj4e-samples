@@ -42,9 +42,9 @@ class AdCreateView(CreateView):
             form.instance.owner = default_user
         return super().form_valid(form)
 
-class AdUpdateView(LoginRequiredMixin, UpdateView):
+class AdUpdateView(UpdateView):
     model = Ad
-    fields = ['title', 'price', 'text']
+    form_class = CreateForm
     template_name = "ads/ad_form.html"
     success_url = reverse_lazy('ads:all')
 
