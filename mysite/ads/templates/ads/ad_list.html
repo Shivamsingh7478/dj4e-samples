@@ -30,9 +30,7 @@
   <p>There are no ads in the database</p>
   {% endif %}
   <p>
-    {% if user.is_authenticated %}
     <a href="{% url 'ads:ad_create' %}">Create Ad</a> |
-    {% endif %}
     <a href="{% url 'ads:all' %}">View all</a>
   </p>
 
