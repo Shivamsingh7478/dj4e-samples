@@ -10,7 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 
-from .forms import AdForm
+from .forms import CreateForm
 
 class AdListView(OwnerListView):
     model = Ad
@@ -23,14 +23,14 @@ class AdDetailView(OwnerDetailView):
     model = Ad
     template_name = "ads/ad_detail.html"
 
-class AdCreateView(CreateView):
+class AdCreateView(LoginRequiredMixin, CreateView):
     model = Ad
     fields = ['title', 'price', 'text']
     template_name = "ads/ad_form.html"
     success_url = reverse_lazy('ads:all')
     
     def form_valid(self, form):
-        form.instance.owner = self.request.user if self.request.user.is_authenticated else None
+        form.instance.owner = self.request.user
         return super().form_valid(form)
 
 class AdUpdateView(LoginRequiredMixin, UpdateView):
