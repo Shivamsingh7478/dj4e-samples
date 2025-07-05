@@ -1,4 +1,4 @@
-{% extends "base_menu.html" %}
+{% extends "base_bootstrap.html" %}
 {% block content %}
 <h1>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Ad</h1>
 <form method="post">{% csrf_token %}
