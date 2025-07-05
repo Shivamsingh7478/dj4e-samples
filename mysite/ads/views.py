@@ -27,17 +27,12 @@ class AdCreateView(CreateView):
     model = Ad
     form_class = CreateForm
     template_name = "ads/ad_form.html"
-    success_url = reverse_lazy('ads:all')
+    success_url = '/ads/'
     
     def form_valid(self, form):
-        try:
-            if self.request.user.is_authenticated:
-                form.instance.owner = self.request.user
-            # If not authenticated, owner will be None (which is allowed by the model)
-            return super().form_valid(form)
-        except Exception as e:
-            print(f"Error in form_valid: {e}")
-            raise
+        if self.request.user.is_authenticated:
+            form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 class AdUpdateView(LoginRequiredMixin, UpdateView):
     model = Ad

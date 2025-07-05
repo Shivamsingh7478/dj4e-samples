@@ -11,7 +11,7 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody id="ads-table-body">
+    <tbody>
       {% for ad in ad_list %}
       <tr>
         <td><a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a></td>
@@ -33,26 +33,4 @@
     <a href="{% url 'ads:ad_create' %}">Create Ad</a> |
     <a href="{% url 'ads:all' %}">View all</a>
   </p>
-
-  <script>
-    // Function to refresh the ads table
-    function refreshAdsTable() {
-      fetch('/ads/ad/list/ajax/')
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById('ads-table-body').innerHTML = html;
-        })
-        .catch(error => console.error('Error refreshing ads:', error));
-    }
-
-    // Refresh table every 2 seconds
-    setInterval(refreshAdsTable, 2000);
-
-    // Also refresh when page becomes visible (user switches back to tab)
-    document.addEventListener('visibilitychange', function() {
-      if (!document.hidden) {
-        refreshAdsTable();
-      }
-    });
-  </script>
 {% endblock %} 
