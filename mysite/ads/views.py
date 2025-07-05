@@ -19,6 +19,98 @@ class AdListView(OwnerListView):
 
     def get_queryset(self):
         return Ad.objects.all()
+    
+    def get(self, request, *args, **kwargs):
+        # First try the normal template-based approach
+        try:
+            return super().get(request, *args, **kwargs)
+        except Exception as e:
+            # If template fails, fall back to simple HTML
+            ads = Ad.objects.all()
+            html = f"""
+            <html>
+            <head><title>Ads List</title></head>
+            <body>
+                <h1>Ads List</h1>
+                <table border="1" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            """
+            
+            for ad in ads:
+                html += f"""
+                        <tr>
+                            <td><a href="/ads/ad/{ad.id}/">{ad.title}</a></td>
+                            <td>${ad.price}</td>
+                            <td>
+                                <a href="/ads/ad/{ad.id}/update/">Edit</a> | 
+                                <a href="/ads/ad/{ad.id}/delete/">Delete</a>
+                            </td>
+                        </tr>
+                """
+            
+            html += """
+                    </tbody>
+                </table>
+                <p>
+                    <a href="/ads/ad/create/">Create Ad</a> |
+                    <a href="/ads/">View all</a>
+                </p>
+            </body>
+            </html>
+            """
+            
+            return HttpResponse(html)
+
+def simple_ads_list(request):
+    """Simple ads list view that shows all ads"""
+    ads = Ad.objects.all()
+    html = f"""
+    <html>
+    <head><title>Ads List</title></head>
+    <body>
+        <h1>Ads List</h1>
+        <table border="1" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+    """
+    
+    for ad in ads:
+        html += f"""
+                <tr>
+                    <td><a href="/ads/ad/{ad.id}/">{ad.title}</a></td>
+                    <td>${ad.price}</td>
+                    <td>
+                        <a href="/ads/ad/{ad.id}/update/">Edit</a> | 
+                        <a href="/ads/ad/{ad.id}/delete/">Delete</a>
+                    </td>
+                </tr>
+        """
+    
+    html += """
+            </tbody>
+        </table>
+        <p>
+            <a href="/ads/ad/create/">Create Ad</a> |
+            <a href="/ads/">View all</a>
+        </p>
+    </body>
+    </html>
+    """
+    
+    return HttpResponse(html)
 
 class AdDetailView(OwnerDetailView):
     model = Ad

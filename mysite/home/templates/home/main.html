@@ -4,4 +4,35 @@
     <p>
     Hello world.
     </p>
+    
+    <h2>Ads List</h2>
+    {% if ads %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ad in ads %}
+            <tr>
+                <td><a href="{% url 'ads:ad_detail' ad.id %}">{{ ad.title }}</a></td>
+                <td>{{ ad.price }}</td>
+                <td>
+                    <a href="{% url 'ads:ad_update' ad.id %}">Edit</a> | 
+                    <a href="{% url 'ads:ad_delete' ad.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>There are no ads in the database</p>
+    {% endif %}
+    <p>
+        <a href="{% url 'ads:ad_create' %}">Create Ad</a> |
+        <a href="{% url 'ads:all' %}">View all</a>
+    </p>
 {% endblock content %} 
