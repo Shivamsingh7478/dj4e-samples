@@ -24,14 +24,29 @@ from django.views.generic import TemplateView
 from ads.models import Ad
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login as auth_login
-from django.http import JsonResponse
+from django.contrib.auth import login as auth_login, logout
+from django.http import JsonResponse, HttpResponse
+
+def simple_logout(request):
+    """Simple logout view that always works"""
+    logout(request)
+    return HttpResponse("""
+    <html>
+    <head><title>Logged Out</title></head>
+    <body>
+        <h1>Logged Out</h1>
+        <p>You have been successfully logged out.</p>
+        <p><a href="/">Go to Home</a></p>
+    </body>
+    </html>
+    """)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/logout/', simple_logout, name='simple_logout'),
     re_path(r'^oauth/', include('social_django.urls', namespace='social')),
     path('ads/', include('ads.urls')),
 ]
