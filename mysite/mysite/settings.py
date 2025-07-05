@@ -169,7 +169,7 @@ REST_FRAMEWORK = {
     )
 }
 
-LOGOUT_REDIRECT_URL = '/'
+# LOGOUT_REDIRECT_URL = '/'  # Commented out to prevent redirect issues
 STATIC_ROOT = '/home/shivamsingh747804/dj4e-samples/staticfiles'
 
 CSRF_TRUSTED_ORIGINS = [
