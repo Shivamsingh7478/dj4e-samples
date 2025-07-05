@@ -12,6 +12,6 @@ urlpatterns = [
     path('debug/<int:pk>/', views.debug_detail, name='debug_detail'),
     path('ad/create/', views.AdCreateView.as_view(), name='ad_create'),
     path('ad/<int:pk>/update/', views.AdUpdateView.as_view(), name='ad_update'),
-    path('ad/<int:pk>/delete/', views.AdDeleteView.as_view(), name='ad_delete'),
+    path('ad/<int:pk>/delete/', views.simple_delete, name='ad_delete'),
     path('ad/list/ajax/', views.ad_list_ajax, name='ad_list_ajax'),
 ] 

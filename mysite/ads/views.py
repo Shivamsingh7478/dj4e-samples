@@ -227,6 +227,56 @@ class AdDeleteView(DeleteView):
     def get_queryset(self):
         return Ad.objects.all()
 
+def simple_delete(request, pk):
+    """Simple delete view that doesn't rely on owner mixin"""
+    try:
+        ad = Ad.objects.get(id=pk)
+        if request.method == 'POST':
+            ad.delete()
+            return redirect('ads:all')
+        
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Delete Ad</title>
+            <meta charset="utf-8">
+            <style>
+                body {{ font-family: Arial, sans-serif; margin: 50px; }}
+                .container {{ max-width: 500px; margin: 0 auto; }}
+                .btn {{ 
+                    display: inline-block; 
+                    padding: 10px 20px; 
+                    margin: 5px; 
+                    text-decoration: none; 
+                    border-radius: 5px; 
+                    border: none; 
+                    cursor: pointer; 
+                }}
+                .btn-danger {{ background-color: #dc3545; color: white; }}
+                .btn-secondary {{ background-color: #6c757d; color: white; }}
+                .btn:hover {{ opacity: 0.8; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Delete Ad</h1>
+                <p>Are you sure you want to delete "{ad.title}"?</p>
+                <form method="post">
+                    <button type="submit" class="btn btn-danger">Yes, delete.</button>
+                    <a href="/ads/" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </body>
+        </html>
+        """
+        return HttpResponse(html)
+        
+    except Ad.DoesNotExist:
+        return HttpResponse(f"Ad ID {pk} not found", status=404)
+    except Exception as e:
+        return HttpResponse(f"Error: {e}", status=500)
+
 def test_detail(request, pk):
     """Simple test view to debug the detail page issue"""
     try:
