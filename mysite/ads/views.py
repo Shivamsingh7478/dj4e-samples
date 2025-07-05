@@ -23,14 +23,16 @@ class AdDetailView(OwnerDetailView):
     model = Ad
     template_name = "ads/ad_detail.html"
 
-class AdCreateView(LoginRequiredMixin, CreateView):
+class AdCreateView(CreateView):
     model = Ad
     fields = ['title', 'price', 'text']
     template_name = "ads/ad_form.html"
     success_url = reverse_lazy('ads:all')
     
     def form_valid(self, form):
-        form.instance.owner = self.request.user
+        if self.request.user.is_authenticated:
+            form.instance.owner = self.request.user
+        # If not authenticated, owner will be None (which is allowed by the model)
         return super().form_valid(form)
 
 class AdUpdateView(LoginRequiredMixin, UpdateView):
